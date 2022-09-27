@@ -1,9 +1,17 @@
 import wollok.game.*
 
-object pepita {
+object jugadorUno {
+	var position = game.center()
+	
+	method image() { return "jugadorUno.png"}
+	method position() { return position}
+	method moverA(dir) {position = dir.siguientePosicion(position)}
+}
 
-	method position() = game.center()
-
-	method image() = "pepita.png"
-
+object jugadorDos {
+	var position = game.center()
+	
+	method image() { return "jugadorDos.png"}
+	method position() { return position}
+	method moverA(dir) {position = dir.siguientePosicion(position)}
 }
