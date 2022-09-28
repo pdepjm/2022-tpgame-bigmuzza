@@ -1,6 +1,6 @@
 # Nombre del juego (<- borrar y completar)
 
-## Equipo de desarrollo
+## Equipo de desarrollo: BigMuzza
 
 - Alguien
 - Persona

@@ -1,5 +1,5 @@
 import wollok.game.*
-import pepita.*
+import bomber.*
 import juego.*
 
 program juego {
