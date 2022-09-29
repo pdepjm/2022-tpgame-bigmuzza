@@ -17,6 +17,7 @@ object juego {
 		game.title("BomberMan")
 		game.width(20)
 		game.height(20)
+		game.boardGround("unnamed.png")
 	}
 	
 	method agregarPersonajes() {
