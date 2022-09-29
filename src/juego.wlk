@@ -9,7 +9,9 @@ object juego {
 		self.hacerConfiguracionInicial()
 		self.agregarPersonajes()
 		self.configurarTeclas()
-		//self.configurarAcciones()
+		self.configurarAcciones()
+		self.agregarObjetos()
+		//self.configurarEntorno()
 		game.start()
 	}
 	
@@ -17,11 +19,23 @@ object juego {
 		game.title("BomberMan")
 		game.width(20)
 		game.height(20)
-		game.boardGround("unnamed.png")
+		//game.boardGround("pepe.jpg")
 	}
 	
 	method agregarPersonajes() {
 		self.agregarBombers()
+	}
+	method agregarObjetos() {
+		self.agregarPared()
+		self.agregarAgarrable()
+	}
+	
+	method agregarAgarrable(){
+		game.addVisual(new ObjetoAgarrable(position =  game.at(6,6), image = "bombaAgarrable.png"))
+	}
+	
+	method agregarPared() {
+		game.addVisual(stone)
 	}
 	
 	method agregarBombers() {
@@ -34,6 +48,8 @@ object juego {
 		keyboard.d().onPressDo({bomber1.moverA(derecha)})
 		keyboard.s().onPressDo({bomber1.moverA(abajo)}) 
 		keyboard.a().onPressDo({bomber1.moverA(izquierda)})
+		keyboard.space().onPressDo({bomber1.ponerBomba()})
+		
 		
 		
 		keyboard.right().onPressDo({bomber2.moverA(derecha)})
@@ -41,4 +57,11 @@ object juego {
 		keyboard.down().onPressDo({bomber2.moverA(abajo)}) 
 		keyboard.left().onPressDo({bomber2.moverA(izquierda)})
 	}
+	method configurarAcciones(){
+		game.onCollideDo(bomber1,{chocado => chocado.teChocasteConElBomber()})	
+	}
+	
+	//method configurarEntorno() {
+		
+	//}
 }
