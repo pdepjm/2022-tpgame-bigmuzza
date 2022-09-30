@@ -2,8 +2,6 @@ import wollok.game.*
 import bomber.*
 import direcciones.*
 
-
-
 object juego {
 	method iniciar() {
 		self.hacerConfiguracionInicial()
@@ -31,11 +29,14 @@ object juego {
 	}
 	
 	method agregarAgarrable(){
-		game.addVisual(new ObjetoAgarrable(position =  game.at(6,6), image = "bombaAgarrable.png"))
+		game.addVisual(new ObjetoAgarrable(position = game.at(6,6), image = "bombaAgarrable.png"))
 	}
-	
+
 	method agregarPared() {
-		game.addVisual(stone)
+		new Range(start = 0, end = 19).forEach{value => game.addVisual(new Pared(position = game.at(value,0)))}
+		new Range(start = 0, end = 19).forEach{value => game.addVisual(new Pared(position = game.at(0,value)))}
+		new Range(start = 0, end = 19).forEach{value => game.addVisual(new Pared(position = game.at(19,value)))}
+		new Range(start = 0, end = 19).forEach{value => game.addVisual(new Pared(position = game.at(value,19)))}
 	}
 	
 	method agregarBombers() {
@@ -51,17 +52,13 @@ object juego {
 		keyboard.space().onPressDo({bomber1.ponerBomba()})
 		
 		
-		
 		keyboard.right().onPressDo({bomber2.moverA(derecha)})
 		keyboard.up().onPressDo({bomber2.moverA(arriba)})
 		keyboard.down().onPressDo({bomber2.moverA(abajo)}) 
 		keyboard.left().onPressDo({bomber2.moverA(izquierda)})
+		keyboard.enter().onPressDo({bomber2.ponerBomba()})
 	}
 	method configurarAcciones(){
 		game.onCollideDo(bomber1,{chocado => chocado.teChocasteConElBomber()})	
 	}
-	
-	//method configurarEntorno() {
-		
-	//}
 }

@@ -1,4 +1,5 @@
 import wollok.game.*
+import juego.*
 
 
 object bomber1 {
@@ -7,8 +8,11 @@ object bomber1 {
 	method image() { return "guy.png"}
 	method position() { return position}
 	
-	method moverA(dir) {
-		position = dir.siguientePosicion(position)
+	method moverA(dir) { 
+		if (game.getObjectsIn(dir.siguientePosicion(position)).isEmpty()){
+			position = dir.siguientePosicion(position)
+			juego.esBorde(position)
+		}
 	}
 	
 	method ponerBomba() {
@@ -23,26 +27,31 @@ object bomber2 {
 	method position() { return position}
 	
 	method moverA(dir) { 
-		if (dir.siguientePosicion(position) != stone.position()) {
+		if (game.getObjectsIn(dir.siguientePosicion(position)).isEmpty())
 			position = dir.siguientePosicion(position)
-		} else{}
 	}
-	method teChocasteConElBomber(){
-		game.ground("pepeWin.jpg")
-		game.say(self,"You are the true PEPE")
+	
+	method ponerBomba() {
+		game.addVisual(new Bomba(position = self.position()))
 	}
+//	method teChocasteConElBomber(){
+//		game.ground("pepeWin.jpg")
+//		game.say(self,"You are the true PEPE")
+//	}
 }
 
-object stone {
-	const position = game.center().down(1)
+class Pared {
+	const position = game.origin()
+//	const destruible
 	
 	method image() { return "stone.png"}
 	method position() { return position}
+//	method destruible() { return destruible}
 	
-	method teChocasteConElBomber(){
-		game.ground("pepeWin.jpg")
-		game.say(self,"You are the true PEPE")
-	}
+//	method teChocasteConElBomber(){
+//		game.ground("pepeWin.jpg")
+//		game.say(self,"You are the true PEPE")
+//	}
 }
 
 class Bomba {
@@ -51,10 +60,10 @@ class Bomba {
 	method image() { return "bomba.png"}
 	method position() { return position}
 	
-	method teChocasteConElBomber(){
-		game.ground("pepeWin.jpg")
-		game.say(self,"You are the true PEPE")
-	}
+//	method teChocasteConElBomber(){
+//		game.ground("pepeWin.jpg")
+//		game.say(self,"You are the true PEPE")
+//	}
 }
 
 class ObjetoAgarrable{

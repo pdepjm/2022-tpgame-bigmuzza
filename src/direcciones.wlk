@@ -1,5 +1,3 @@
-
-
 object arriba {
 	method siguientePosicion(pos) = pos.up(1) 	
 }
