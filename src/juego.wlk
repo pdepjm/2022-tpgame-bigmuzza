@@ -28,9 +28,10 @@ object juego {
 		self.agregarAgarrable()
 	}
 	
-	method agregarAgarrable(){
-		game.addVisual(new ObjetoAgarrable(position = game.at(6,6), image = "bombaAgarrable.png"))
-	}
+//	method agregarAgarrable(){
+//		const agarrable = new ObjetoAgarrable(position = game.at(10,10), image = "bombaAgarrable.png") 
+//		game.addVisual(agarrable)
+//	}
 
 // otra opcion mas "normal" (?)
 //	method agregarPared() {
@@ -40,7 +41,7 @@ object juego {
 //		new Range(start = 0, end = 19).forEach{value => game.addVisual(new Pared(position = game.at(value,19)))}
 //	}
 
-//doble bucle, comun de C
+//doble bucle, tipico de C
 	method agregarPared() {
 		new Range(start = 0, end = 19)
 		.forEach{x => new Range(start = 0, end = 19)
@@ -78,6 +79,7 @@ object juego {
 		keyboard.left().onPressDo({bomber2.moverA(izquierda)})
 		keyboard.enter().onPressDo({bomber2.ponerBomba()})
 	}
+	
 //	method configurarAcciones(){
 //		game.onCollideDo(bomber1,{chocado => chocado.teChocasteConElBomber()})	
 //	}
