@@ -9,10 +9,8 @@ object bomber1 {
 	method position() { return position}
 	
 	method moverA(dir) { 
-		if (game.getObjectsIn(dir.siguientePosicion(position)).isEmpty()){
+		if (game.getObjectsIn(dir.siguientePosicion(position)).isEmpty())
 			position = dir.siguientePosicion(position)
-			juego.esBorde(position)
-		}
 	}
 	
 	method ponerBomba() {
