@@ -50,32 +50,32 @@ class Bomba {
 	method explotar(bomba){ //decidir si explotan tambien en diagonal
 		game.removeVisual(bomba)
 		if(not game.getObjectsIn(position.left(1)).isEmpty())
-			game.removeVisual(game.getObjectsIn(position.left(1)).head())
+			if(game.getObjectsIn(position.left(1)).head().destruible())
+				game.removeVisual(game.getObjectsIn(position.left(1)).head())
 		if(not game.getObjectsIn(position.down(1)).isEmpty())
-			game.removeVisual(game.getObjectsIn(position.down(1)).head())
+			if(game.getObjectsIn(position.down(1)).head().destruible())
+				game.removeVisual(game.getObjectsIn(position.down(1)).head())
 		if(not game.getObjectsIn(position.up(1)).isEmpty())
-			game.removeVisual(game.getObjectsIn(position.up(1)).head())
+			if(game.getObjectsIn(position.up(1)).head().destruible())
+				game.removeVisual(game.getObjectsIn(position.up(1)).head())
 		if(not game.getObjectsIn(position.right(1)).isEmpty())
-			game.removeVisual(game.getObjectsIn(position.right(1)).head())			
+			if(game.getObjectsIn(position.right(1)).head().destruible())
+				game.removeVisual(game.getObjectsIn(position.right(1)).head())			
 	}
-//	method teChocasteConElBomber(){
-//		game.ground("pepeWin.jpg")
-//		game.say(self,"You are the true PEPE")
-//	}
 }
 
 class Pared {
 	const position = game.origin()
-//	const destruible
+	const destruible
 	
-	method image() { return "stone.png"}
+	method image() { 
+		if(destruible)
+			return "madera.png"
+		else
+			return "piedra.png"
+	}
 	method position() { return position}
-//	method destruible() { return destruible}
-	
-//	method teChocasteConElBomber(){
-//		game.ground("pepeWin.jpg")
-//		game.say(self,"You are the true PEPE")
-//	}
+	method destruible() { return destruible}
 }
 
 class ObjetoAgarrable{
