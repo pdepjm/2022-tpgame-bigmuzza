@@ -5,7 +5,7 @@ import juego.*
 object bomber1 {
 	var position = game.center().left(1)
 	
-	method image() { return "guy.png"}
+	method image() { return "Bomber1.png"}
 	method position() { return position}
 	
 	method moverA(direccion) { 
@@ -23,7 +23,7 @@ object bomber1 {
 object bomber2 {
 	var position = game.center().right(1)
 	
-	method image() { return "guy2.png"}
+	method image() { return "Bomber2.png"}
 	method position() { return position}
 	
 	method moverA(direccion) { 
@@ -70,9 +70,9 @@ class Pared {
 	
 	method image() { 
 		if(destruible)
-			return "madera.png"
+			return "Brick.png"
 		else
-			return "piedra.png"
+			return "Wall.png"
 	}
 	method position() { return position}
 	method destruible() { return destruible}

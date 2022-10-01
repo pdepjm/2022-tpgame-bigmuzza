@@ -17,6 +17,7 @@ object juego {
 		game.title("BomberMan")
 		game.width(21)
 		game.height(21)
+		game.cellSize(64)
 		//game.boardGround("pepe.jpg")
 	}
 	
@@ -25,10 +26,15 @@ object juego {
 		game.addVisual(bomber1)
 		game.addVisual(bomber2)
 	}
+//	method agregarObjetos() {
+//		self.agregarParedesLimite()
+//		self.agregarParedesRompibles()
+////		self.agregarAgarrable()
+//	}
+	
 	method agregarObjetos() {
 		self.agregarParedesLimite()
 		self.agregarParedesRompibles()
-//		self.agregarAgarrable()
 	}
 	
 //	method agregarAgarrable(){
@@ -53,18 +59,18 @@ object juego {
 			}
 		}
 		
-//		new Range(start = 0, end = 20, step = 2)
-//		.forEach{x => new Range(start = 0, end = 20, step = 2)
-//			.forEach{y =>
-//	  			game.addVisual(new Pared(position = game.at(x,y), destruible = false))
-//			}
-//		}
+		new Range(start = 0, end = 20, step = 2)
+		.forEach{x => new Range(start = 0, end = 20, step = 2)
+			.forEach{y =>
+	  			game.addVisual(new Pared(position = game.at(x,y), destruible = false))
+			}
+		}
 	}
 	
 	method agregarParedesRompibles(){
 		new Range(start = 0, end = 20)
 		.forEach{x => new Range(start = 0, end = 20)
-			.forEach{y => if((0.randomUpTo(1))>=0.5)
+			.forEach{y => if((0.randomUpTo(1))>=0.5 && self.esLugarVacio(game.at(x,y)))
 				game.addVisual(new Pared(position = game.at(x,y), destruible = true))
 			}
 		}
