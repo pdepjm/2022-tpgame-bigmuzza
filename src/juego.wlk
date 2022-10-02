@@ -7,9 +7,7 @@ object juego {
 		self.hacerConfiguracionInicial()
 		self.agregarPersonajes()
 		self.configurarTeclas()
-//		self.configurarAcciones()
 		self.agregarObjetos()
-		//self.configurarEntorno()
 		game.start()
 	}
 	
@@ -18,23 +16,17 @@ object juego {
 		game.width(21)
 		game.height(21)
 		game.cellSize(64)
-		//game.boardGround("pepe.jpg")
 	}
 	
 	method agregarPersonajes() {
-//		self.agregarBombers()
 		game.addVisual(bomber1)
 		game.addVisual(bomber2)
 	}
-//	method agregarObjetos() {
-//		self.agregarParedesLimite()
-//		self.agregarParedesRompibles()
-////		self.agregarAgarrable()
-//	}
 	
 	method agregarObjetos() {
 		self.agregarParedesLimite()
 		self.agregarParedesRompibles()
+//		self.agregarAgarrable()
 	}
 	
 //	method agregarAgarrable(){
@@ -77,31 +69,23 @@ object juego {
 	}
 	
 	method esBorde(posicion){
-		if(posicion.x() == 0 || posicion.x() == 20) 
-			return true
-		if(posicion.y() == 0 || posicion.y() == 20)
-			return true
-		else
-			return false
-	}
+		return (posicion.x() == 0 || posicion.x() == 20) || (posicion.y() == 0 || posicion.y() == 20)}
 	
 	method esLugarVacio(position){return game.getObjectsIn(position).isEmpty()}
-
 	
-//	method agregarBombers() {
-//		game.addVisual(bomber1)
-//		game.addVisual(bomber2)
+//	method esAreaSegura(position){
+//		return 
 //	}
 	
 	method configurarTeclas() {
-		//Jugador 1: wasd + espacio
+		//Jugador 1: wasd + Espacio
 		keyboard.w().onPressDo({bomber1.moverA(arriba)})
 		keyboard.d().onPressDo({bomber1.moverA(derecha)})
 		keyboard.s().onPressDo({bomber1.moverA(abajo)}) 
 		keyboard.a().onPressDo({bomber1.moverA(izquierda)})
 		keyboard.space().onPressDo({bomber1.ponerBomba()})
 		
-		//Jugador 2:  + Enter
+		//Jugador 2:  ↑ ↓ ← → + Enter
 		keyboard.right().onPressDo({bomber2.moverA(derecha)})
 		keyboard.up().onPressDo({bomber2.moverA(arriba)})
 		keyboard.down().onPressDo({bomber2.moverA(abajo)}) 

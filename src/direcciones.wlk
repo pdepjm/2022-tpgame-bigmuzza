@@ -1,15 +1,39 @@
 object arriba {
-	method siguientePosicion(pos) = pos.up(1) 	
-}
-
-object derecha {
-	method siguientePosicion(pos) = pos.right(1) 	
+	method siguientePosicion(posicion){
+		return posicion.up(1)
+	} 
+	method cambiarAPosicion(posicion, bomber){
+		bomber.cambiarImagenArriba()
+		return self.siguientePosicion(posicion)
+	} 
 }
 
 object abajo {
-	method siguientePosicion(pos) = pos.down(1) 	
+	method siguientePosicion(posicion){
+		return posicion.down(1)
+	}	
+	method cambiarAPosicion(posicion, bomber){
+		bomber.cambiarImagenAbajo()
+		return self.siguientePosicion(posicion)
+	} 
+}
+
+object derecha {
+	method siguientePosicion(posicion){
+		return posicion.right(1)
+	}
+	method cambiarAPosicion(posicion, bomber){
+		bomber.cambiarImagenDerecha()
+		return self.siguientePosicion(posicion)
+	} 
 }
 
 object izquierda {
-	method siguientePosicion(pos) = pos.left(1) 	
+	method siguientePosicion(posicion){
+		return posicion.left(1)
+	}	
+	method cambiarAPosicion(posicion, bomber){
+		bomber.cambiarImagenIzquierda()
+		return self.siguientePosicion(posicion)
+	} 
 }
