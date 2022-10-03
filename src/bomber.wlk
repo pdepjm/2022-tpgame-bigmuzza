@@ -1,85 +1,24 @@
 import wollok.game.*
 import juego.*
 
-object bomber1 {
-	var position = game.center().left(1)
-	var imagenBomber1 = "Bomber1.png"
-	
-	var alternarArriba = true
-	var alternarAbajo = true
-	var alternarDerecha = true
-	var alternarIzquierda = true	
-	
-	method moverA(direccion) { 
-		if (game.getObjectsIn(direccion.siguientePosicion(position)).isEmpty())
-			position = direccion.cambiarAPosicion(position, self)
-	}
-	
-	method ponerBomba() {
-		const bomba = new Bomba(position = self.position())
-		game.addVisual(bomba)
-		game.schedule(2000, {=> bomba.bombaEstadoMedio()})
-		game.schedule(3000, {=> bomba.bombaEstadoFinal()})
-		game.schedule(4000, {=> bomba.explotar(bomba)})
-	}
-	
-	method cambiarImagenArriba(){
-		if(alternarArriba){
-			alternarArriba = false
-			imagenBomber1 = "Bomber1Up1.png"
-		}
-		else if(not alternarArriba){
-			alternarArriba = true
-			imagenBomber1 = "Bomber1Up2.png"
-		}
-	}
-	
-	method cambiarImagenAbajo(){
-		if(alternarAbajo){
-			alternarAbajo = false
-			imagenBomber1 = "Bomber1Down1.png"
-		}
-		else if(not alternarAbajo){
-			alternarAbajo = true
-			imagenBomber1 = "Bomber1Down2.png"
-		}
-	}
-	
-	method cambiarImagenDerecha(){
-		if(alternarDerecha){
-			alternarDerecha = false
-			imagenBomber1 = "Bomber1Right1.png"
-		}
-		else if(not alternarDerecha){
-			alternarDerecha = true
-			imagenBomber1 = "Bomber1Right2.png"
-		}
-	}
-	
-	method cambiarImagenIzquierda(){
-		if(alternarIzquierda){
-			alternarIzquierda = false
-			imagenBomber1 = "Bomber1Left1.png"
-		}
-		else if(not alternarIzquierda){
-			alternarIzquierda = true
-			imagenBomber1 = "Bomber1Left2.png"
-		}
-	}	
-	
-	method image() { return imagenBomber1}
-	method position() { return position}
-}
-
-object bomber2 {
-	var position = game.center().right(1)
-	var imagenBomber2 = "Bomber2.png"
-	
+class Bomber {
+	var position
+	var imagenBomber
+	var imgArriba
+	var imgArribaAlt
+	var imgAbajo
+	var imgAbajoAlt
+	var imgDerecha
+	var imgDerechaAlt
+	var imgIzquierda
+	var imgIzquierdaAlt
 	var alternarArriba = true
 	var alternarAbajo = true
 	var alternarDerecha = true
 	var alternarIzquierda = true
 	
+	method position() = position
+	method image() = imagenBomber	
 	method moverA(direccion) { 
 		if (game.getObjectsIn(direccion.siguientePosicion(position)).isEmpty())
 			position = direccion.cambiarAPosicion(position, self)
@@ -96,50 +35,49 @@ object bomber2 {
 	method cambiarImagenArriba(){
 		if(alternarArriba){
 			alternarArriba = false
-			imagenBomber2 = "Bomber2Up1.png"
+			imagenBomber = imgArriba
 		}
-		else if(not alternarArriba){
+		else {
 			alternarArriba = true
-			imagenBomber2 = "Bomber2Up2.png"
+			imagenBomber = imgArribaAlt
 		}
 	}
 	
 	method cambiarImagenAbajo(){
 		if(alternarAbajo){
 			alternarAbajo = false
-			imagenBomber2 = "Bomber2Down1.png"
+			imagenBomber = imgAbajo
 		}
-		else if(not alternarAbajo){
+		else {
 			alternarAbajo = true
-			imagenBomber2 = "Bomber2Down2.png"
+			imagenBomber = imgAbajoAlt
 		}
 	}
 	
 	method cambiarImagenDerecha(){
 		if(alternarDerecha){
 			alternarDerecha = false
-			imagenBomber2 = "Bomber2Right1.png"
+			imagenBomber = imgDerecha
 		}
-		else if(not alternarDerecha){
+		else {
 			alternarDerecha = true
-			imagenBomber2 = "Bomber2Right2.png"
+			imagenBomber = imgDerechaAlt
 		}
 	}
 	
 	method cambiarImagenIzquierda(){
 		if(alternarIzquierda){
 			alternarIzquierda = false
-			imagenBomber2 = "Bomber2Left1.png"
+			imagenBomber = imgIzquierda
 		}
-		else if(not alternarIzquierda){
+		else {
 			alternarIzquierda = true
-			imagenBomber2 = "Bomber2Left2.png"
+			imagenBomber = imgIzquierdaAlt
 		}
 	}
-	
-	method image() { return imagenBomber2} 
-	method position() { return position}
 }
+const bomber1 = new Bomber(position = game.center().left(1), imagenBomber = "Bomber1.png", imgArriba = "Bomber1Up1.png", imgArribaAlt = "Bomber1Up2.png", imgAbajo = "Bomber1Down1.png", imgAbajoAlt = "Bomber1Down2.png", imgDerecha = "Bomber1Right1.png", imgDerechaAlt = "Bomber1Right2.png", imgIzquierda = "Bomber1Left1.png", imgIzquierdaAlt = "Bomber1Left2.png")
+const bomber2 = new Bomber(position = game.center().right(1), imagenBomber = "Bomber2.png", imgArriba = "Bomber2Up1.png", imgArribaAlt = "Bomber2Up2.png", imgAbajo = "Bomber2Down1.png", imgAbajoAlt = "Bomber2Down2.png", imgDerecha = "Bomber2Right1.png", imgDerechaAlt = "Bomber2Right2.png", imgIzquierda = "Bomber2Left1.png", imgIzquierdaAlt = "Bomber2Left2.png")
 
 class Explosion{
 	var position 
@@ -182,7 +120,7 @@ class Bomba {
 			if(game.getObjectsIn(position.right(1)).head().destruible())
 				game.removeVisual(game.getObjectsIn(position.right(1)).head())
 				
-		var explosion = new Explosion(position = self.position()) 				
+		const explosion = new Explosion(position = self.position()) 				
 		game.addVisual(explosion)
 		game.schedule(100, {=> explosion.segundoNivel()})
 		game.schedule(200, {=> explosion.tercerNivel()})
