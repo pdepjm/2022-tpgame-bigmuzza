@@ -18,7 +18,9 @@ object bomber1 {
 	method ponerBomba() {
 		const bomba = new Bomba(position = self.position())
 		game.addVisual(bomba)
-		game.schedule(1000, {=> bomba.explotar(bomba)})
+		game.schedule(2000, {=> bomba.bombaEstadoMedio()})
+		game.schedule(3000, {=> bomba.bombaEstadoFinal()})
+		game.schedule(4000, {=> bomba.explotar(bomba)})
 	}
 	
 	method cambiarImagenArriba(){
@@ -86,7 +88,9 @@ object bomber2 {
 	method ponerBomba() {
 		const bomba = new Bomba(position = self.position())
 		game.addVisual(bomba)
-		game.schedule(1000, {=> bomba.explotar(bomba)})
+		game.schedule(2000, {=> bomba.bombaEstadoMedio()})
+		game.schedule(3000, {=> bomba.bombaEstadoFinal()})
+		game.schedule(4000, {=> bomba.explotar(bomba)})
 	}
 	
 	method cambiarImagenArriba(){
@@ -137,11 +141,32 @@ object bomber2 {
 	method position() { return position}
 }
 
+class Explosion{
+	var position 
+	var imagenCentro = "explosion1centro.png"
+	
+	method primerNivel(){imagenCentro = "explosion1centro.png"}
+	
+	method segundoNivel(){imagenCentro = "explosion2centro.png"}
+	
+	method tercerNivel(){imagenCentro = "explosion3centro.png"}
+	
+	method cuartoNivel(){imagenCentro = "explosion4centro.png"}
+	
+	
+	method sacarExplosion(){
+		game.removeVisual(self)
+	}
+	
+	method image() { return imagenCentro}
+	method position() { return position}
+	
+}
+
 class Bomba {
 	var position
+	var imagenBomba = "Bomb3.png"
 	
-	method image() { return "bomba.png"}
-	method position() { return position}
 	method explotar(bomba){
 		game.removeVisual(bomba)
 		if(not game.getObjectsIn(position.left(1)).isEmpty())
@@ -155,12 +180,33 @@ class Bomba {
 				game.removeVisual(game.getObjectsIn(position.up(1)).head())
 		if(not game.getObjectsIn(position.right(1)).isEmpty())
 			if(game.getObjectsIn(position.right(1)).head().destruible())
-				game.removeVisual(game.getObjectsIn(position.right(1)).head())			
+				game.removeVisual(game.getObjectsIn(position.right(1)).head())
+				
+		var explosion = new Explosion(position = self.position()) 				
+		game.addVisual(explosion)
+		game.schedule(100, {=> explosion.segundoNivel()})
+		game.schedule(200, {=> explosion.tercerNivel()})
+		game.schedule(300, {=> explosion.cuartoNivel()})
+		game.schedule(400, {=> explosion.tercerNivel()})
+		game.schedule(500, {=> explosion.segundoNivel()})
+		game.schedule(600, {=> explosion.primerNivel()})
+		game.schedule(700, {=> explosion.sacarExplosion()})
 	}
+	
+	method bombaEstadoMedio(){
+		imagenBomba = "Bomb2.png"
+	}
+	
+	method bombaEstadoFinal(){
+		imagenBomba = "Bomb1.png"
+	}
+	
+	method image() { return imagenBomba}
+	method position() { return position}
 }
 
 class Pared {
-	const position = game.origin()
+	const position
 	const destruible
 	
 	method image() { 

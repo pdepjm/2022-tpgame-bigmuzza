@@ -69,7 +69,7 @@ object juego {
 	}
 	
 	method esBorde(posicion){
-		return (posicion.x() == 0 || posicion.x() == 20) || (posicion.y() == 0 || posicion.y() == 20)}
+		return (posicion.x() == 0 || posicion.x() == game.width()-1) || (posicion.y() == 0 || posicion.y() == game.height()-1)}
 	
 	method esLugarVacio(position){return game.getObjectsIn(position).isEmpty()}
 	
