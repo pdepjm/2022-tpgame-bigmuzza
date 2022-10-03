@@ -26,10 +26,8 @@ class Bomber {
 	
 	method ponerBomba() {
 		const bomba = new Bomba(position = self.position())
-		game.addVisual(bomba)
-		game.schedule(2000, {=> bomba.bombaEstadoMedio()})
-		game.schedule(3000, {=> bomba.bombaEstadoFinal()})
-		game.schedule(4000, {=> bomba.explotar(bomba)})
+		bomba.animacion(bomba)
+		game.schedule(2900, {=> bomba.explotar(bomba)})
 	}
 	
 	method cambiarImagenArriba(){
@@ -103,7 +101,7 @@ class Explosion{
 
 class Bomba {
 	var position
-	var imagenBomba = "Bomb3.png"
+	var imagenBomba = "Bomb1.png"
 	
 	method explotar(bomba){
 		game.removeVisual(bomba)
@@ -131,12 +129,17 @@ class Bomba {
 		game.schedule(700, {=> explosion.sacarExplosion()})
 	}
 	
-	method bombaEstadoMedio(){
-		imagenBomba = "Bomb2.png"
-	}
-	
-	method bombaEstadoFinal(){
-		imagenBomba = "Bomb1.png"
+	method animacion(bomba) {
+		game.addVisual(bomba)
+		game.schedule(333, {=> imagenBomba = "Bomb2.png"})
+		game.schedule(666, {=> imagenBomba = "Bomb3.png"})
+		game.schedule(999, {=> imagenBomba = "Bomb1.png"})
+		game.schedule(1333, {=> imagenBomba = "Bomb2.png"})
+		game.schedule(1666, {=> imagenBomba = "Bomb3.png"})
+		game.schedule(1999, {=> imagenBomba = "Bomb1.png"})
+		game.schedule(2333, {=> imagenBomba = "Bomb2.png"})
+		game.schedule(2666, {=> imagenBomba = "Bomb3.png"})
+		game.schedule(2999, {=> imagenBomba = "Bomb1.png"})
 	}
 	
 	method image() { return imagenBomba}
