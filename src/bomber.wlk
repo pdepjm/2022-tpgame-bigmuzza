@@ -22,10 +22,23 @@ class Bomber {
 	
 	method image() = imagenBomber
 	
-	method moverA(direccion) { 
-		if (game.getObjectsIn(direccion.siguientePosicion(position)).isEmpty() || game.getObjectsIn(direccion.siguientePosicion(position)).head() == self) // quiero comprobar que a la posicion a la que quiero ir hay un bomber
+	method moverA(direccion) {
+		//if ( ! self.direccionNoDisponible(direccion) ) 
+		//	position = direccion.cambiarAPosicion(position, self)
+		
+		if ( self.direccionApuntadaEstaVacia(direccion) || self.direccionApuntadaEsUnBomber(direccion) )
 			position = direccion.cambiarAPosicion(position, self)
 	}
+	
+	//method direccionNoDisponible(direccion) {
+		//return self.direccionApuntadaEsUnaPared(direccion)
+	//}
+	
+	//method direccionApuntadaEsUnaPared(direccion) = (game.getObjectsIn(direccion.siguientePosicion(position)).head() == bomber1 || game.getObjectsIn(direccion.siguientePosicion(position)).head() == bomber2)
+	
+	method direccionApuntadaEstaVacia(direccion) = game.getObjectsIn(direccion.siguientePosicion(position)).isEmpty()
+	
+	method direccionApuntadaEsUnBomber(direccion) = (game.getObjectsIn(direccion.siguientePosicion(position)).head() == bomber1 || game.getObjectsIn(direccion.siguientePosicion(position)).head() == bomber2)
 	
 	method ponerBomba() {
 		const bomba = new Bomba(position = self.position())
