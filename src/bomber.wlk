@@ -2,6 +2,7 @@ import wollok.game.*
 import juego.*
 
 class Bomber {
+	
 	var position
 	var imagenBomber
 	var imgArriba
@@ -18,9 +19,11 @@ class Bomber {
 	var alternarIzquierda = true
 	
 	method position() = position
-	method image() = imagenBomber	
+	
+	method image() = imagenBomber
+	
 	method moverA(direccion) { 
-		if (game.getObjectsIn(direccion.siguientePosicion(position)).isEmpty())
+		if (game.getObjectsIn(direccion.siguientePosicion(position)).isEmpty() || game.getObjectsIn(direccion.siguientePosicion(position)).head() == self) // quiero comprobar que a la posicion a la que quiero ir hay un bomber
 			position = direccion.cambiarAPosicion(position, self)
 	}
 	
@@ -78,20 +81,19 @@ const bomber1 = new Bomber(position = game.center().left(1), imagenBomber = "Bom
 const bomber2 = new Bomber(position = game.center().right(1), imagenBomber = "Bomber2.png", imgArriba = "Bomber2Up1.png", imgArribaAlt = "Bomber2Up2.png", imgAbajo = "Bomber2Down1.png", imgAbajoAlt = "Bomber2Down2.png", imgDerecha = "Bomber2Right1.png", imgDerechaAlt = "Bomber2Right2.png", imgIzquierda = "Bomber2Left1.png", imgIzquierdaAlt = "Bomber2Left2.png")
 
 class Explosion{
+	
 	var position 
 	var imagenCentro = "explosion1centro.png"
 	
-	method primerNivel(){imagenCentro = "explosion1centro.png"}
-	
-	method segundoNivel(){imagenCentro = "explosion2centro.png"}
-	
-	method tercerNivel(){imagenCentro = "explosion3centro.png"}
-	
-	method cuartoNivel(){imagenCentro = "explosion4centro.png"}
-	
-	
-	method sacarExplosion(){
-		game.removeVisual(self)
+	method animacion(explosion) {
+		game.addVisual(explosion)
+		game.schedule(100, {=> imagenCentro = "explosion2centro.png"})
+		game.schedule(200, {=> imagenCentro = "explosion3centro.png"})
+		game.schedule(300, {=> imagenCentro = "explosion4centro.png"})
+		game.schedule(400, {=> imagenCentro = "explosion3centro.png"})
+		game.schedule(500, {=> imagenCentro = "explosion2centro.png"})
+		game.schedule(600, {=> imagenCentro = "explosion1centro.png"})
+		game.schedule(700, {=> game.removeVisual(self)})
 	}
 	
 	method image() { return imagenCentro}
@@ -119,14 +121,7 @@ class Bomba {
 				game.removeVisual(game.getObjectsIn(position.right(1)).head())
 				
 		const explosion = new Explosion(position = self.position()) 				
-		game.addVisual(explosion)
-		game.schedule(100, {=> explosion.segundoNivel()})
-		game.schedule(200, {=> explosion.tercerNivel()})
-		game.schedule(300, {=> explosion.cuartoNivel()})
-		game.schedule(400, {=> explosion.tercerNivel()})
-		game.schedule(500, {=> explosion.segundoNivel()})
-		game.schedule(600, {=> explosion.primerNivel()})
-		game.schedule(700, {=> explosion.sacarExplosion()})
+		explosion.animacion(explosion)
 	}
 	
 	method animacion(bomba) {
