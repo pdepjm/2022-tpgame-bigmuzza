@@ -14,7 +14,7 @@ object juego {
 	method hacerConfiguracionInicial() {
 		game.title("BomberMan")
 		game.width(21)
-		game.height(21)
+		game.height(17)
 		game.cellSize(64)
 	}
 	
@@ -52,7 +52,7 @@ object juego {
 		}
 		
 		new Range(start = 0, end = 20, step = 2)
-		.forEach{x => new Range(start = 0, end = 20, step = 2)
+		.forEach{x => new Range(start = 0, end = 16, step = 2)
 			.forEach{y =>
 	  			game.addVisual(new Pared(position = game.at(x,y), destruible = false))
 			}

@@ -3,7 +3,7 @@ object arriba {
 		return posicion.up(1)
 	} 
 	method cambiarAPosicion(posicion, bomber){
-		bomber.cambiarImagenArriba()
+		bomber.cambiarImagen(self)
 		return self.siguientePosicion(posicion)
 	} 
 }
@@ -13,7 +13,7 @@ object abajo {
 		return posicion.down(1)
 	}	
 	method cambiarAPosicion(posicion, bomber){
-		bomber.cambiarImagenAbajo()
+		bomber.cambiarImagen(self)
 		return self.siguientePosicion(posicion)
 	} 
 }
@@ -23,7 +23,7 @@ object derecha {
 		return posicion.right(1)
 	}
 	method cambiarAPosicion(posicion, bomber){
-		bomber.cambiarImagenDerecha()
+		bomber.cambiarImagen(self)
 		return self.siguientePosicion(posicion)
 	} 
 }
@@ -33,7 +33,7 @@ object izquierda {
 		return posicion.left(1)
 	}	
 	method cambiarAPosicion(posicion, bomber){
-		bomber.cambiarImagenIzquierda()
+		bomber.cambiarImagen(self)
 		return self.siguientePosicion(posicion)
 	} 
 }

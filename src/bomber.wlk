@@ -1,5 +1,6 @@
 import wollok.game.*
 import juego.*
+import direcciones.*
 
 class Bomber {
 	
@@ -23,18 +24,9 @@ class Bomber {
 	method image() = imagenBomber
 	
 	method moverA(direccion) {
-		//if ( ! self.direccionNoDisponible(direccion) ) 
-		//	position = direccion.cambiarAPosicion(position, self)
-		
 		if ( self.direccionApuntadaEstaVacia(direccion) || self.direccionApuntadaEsUnBomber(direccion) )
 			position = direccion.cambiarAPosicion(position, self)
 	}
-	
-	//method direccionNoDisponible(direccion) {
-		//return self.direccionApuntadaEsUnaPared(direccion)
-	//}
-	
-	//method direccionApuntadaEsUnaPared(direccion) = (game.getObjectsIn(direccion.siguientePosicion(position)).head() == bomber1 || game.getObjectsIn(direccion.siguientePosicion(position)).head() == bomber2)
 	
 	method direccionApuntadaEstaVacia(direccion) = game.getObjectsIn(direccion.siguientePosicion(position)).isEmpty()
 	
@@ -46,50 +38,47 @@ class Bomber {
 		game.schedule(2900, {=> bomba.explotar(bomba)})
 	}
 	
-	method cambiarImagenArriba(){
-		if(alternarArriba){
-			alternarArriba = false
-			imagenBomber = imgArriba
-		}
-		else {
-			alternarArriba = true
-			imagenBomber = imgArribaAlt
-		}
-	}
-	
-	method cambiarImagenAbajo(){
-		if(alternarAbajo){
-			alternarAbajo = false
-			imagenBomber = imgAbajo
-		}
-		else {
-			alternarAbajo = true
-			imagenBomber = imgAbajoAlt
-		}
-	}
-	
-	method cambiarImagenDerecha(){
-		if(alternarDerecha){
-			alternarDerecha = false
-			imagenBomber = imgDerecha
-		}
-		else {
-			alternarDerecha = true
-			imagenBomber = imgDerechaAlt
-		}
-	}
-	
-	method cambiarImagenIzquierda(){
-		if(alternarIzquierda){
-			alternarIzquierda = false
-			imagenBomber = imgIzquierda
-		}
-		else {
-			alternarIzquierda = true
-			imagenBomber = imgIzquierdaAlt
+	method cambiarImagen(dir) {
+		if (dir == arriba) {
+			if(alternarArriba){
+				alternarArriba = false
+				imagenBomber = imgArriba
+			}
+			else {
+				alternarArriba = true
+				imagenBomber = imgArribaAlt
+			}
+		} else if (dir == abajo) {
+			if(alternarAbajo){
+				alternarAbajo = false
+				imagenBomber = imgAbajo
+			}
+			else {
+				alternarAbajo = true
+				imagenBomber = imgAbajoAlt
+			}
+		} else if (dir == derecha) {
+			if(alternarDerecha){
+				alternarDerecha = false
+				imagenBomber = imgDerecha
+			}
+			else {
+				alternarDerecha = true
+				imagenBomber = imgDerechaAlt
+			}
+		} else if (dir == izquierda) {
+			if(alternarIzquierda){
+				alternarIzquierda = false
+				imagenBomber = imgIzquierda
+			}
+			else {
+				alternarIzquierda = true
+				imagenBomber = imgIzquierdaAlt
+			}
 		}
 	}
 }
+
 const bomber1 = new Bomber(position = game.center().left(1), imagenBomber = "Bomber1.png", imgArriba = "Bomber1Up1.png", imgArribaAlt = "Bomber1Up2.png", imgAbajo = "Bomber1Down1.png", imgAbajoAlt = "Bomber1Down2.png", imgDerecha = "Bomber1Right1.png", imgDerechaAlt = "Bomber1Right2.png", imgIzquierda = "Bomber1Left1.png", imgIzquierdaAlt = "Bomber1Left2.png")
 const bomber2 = new Bomber(position = game.center().right(1), imagenBomber = "Bomber2.png", imgArriba = "Bomber2Up1.png", imgArribaAlt = "Bomber2Up2.png", imgAbajo = "Bomber2Down1.png", imgAbajoAlt = "Bomber2Down2.png", imgDerecha = "Bomber2Right1.png", imgDerechaAlt = "Bomber2Right2.png", imgIzquierda = "Bomber2Left1.png", imgIzquierdaAlt = "Bomber2Left2.png")
 
