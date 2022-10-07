@@ -18,25 +18,32 @@ class Bomber {
 	var alternarAbajo = true
 	var alternarDerecha = true
 	var alternarIzquierda = true
+	var poderBomba = 1
 	
 	method position() = position
 	
 	method image() = imagenBomber
 	
 	method moverA(direccion) {
-		if ( self.direccionApuntadaEstaVacia(direccion) || self.direccionApuntadaEsUnBomber(direccion) )
+		if ( self.direccionApuntadaEstaVacia(direccion) || self.direccionApuntadaEsUnBomber(direccion) ) // hay que hacerlo en una sola pregunta xd
 			position = direccion.cambiarAPosicion(position, self)
 	}
 	
-	method direccionApuntadaEstaVacia(direccion) = game.getObjectsIn(direccion.siguientePosicion(position)).isEmpty()
+	method direccionApuntadaEstaVacia(direccion) = game.getObjectsIn(direccion.siguientePosicion(position)).isEmpty() // bomber1 bomber2 esunPowerup esunaExplosion esta vacio (direccionALaQueAPuntaEstaHabilitada)
 	
 	method direccionApuntadaEsUnBomber(direccion) = (game.getObjectsIn(direccion.siguientePosicion(position)).head() == bomber1 || game.getObjectsIn(direccion.siguientePosicion(position)).head() == bomber2)
 	
 	method ponerBomba() {
-		const bomba = new Bomba(position = self.position())
+		const bomba = new Bomba(position = self.position(), poder = self.poderBomba())
 		bomba.animacion(bomba)
 		game.schedule(2900, {=> bomba.explotar(bomba)})
 	}
+	
+	method poderBomba() = poderBomba
+	
+	method masPoderBomba() {
+		poderBomba += 1
+	} 
 	
 	method cambiarImagen(dir) {
 		if (dir == arriba) {
@@ -86,6 +93,7 @@ class Explosion{
 	
 	var position 
 	var imagenCentro = "explosion1centro.png"
+	const poderExplosion
 	
 	method animacion(explosion) {
 		game.addVisual(explosion)
@@ -98,17 +106,10 @@ class Explosion{
 		game.schedule(700, {=> game.removeVisual(self)})
 	}
 	
-	method image() { return imagenCentro}
-	method position() { return position}
-	
-}
-
-class Bomba {
-	var position
-	var imagenBomba = "Bomb1.png"
-	
-	method explotar(bomba){
-		game.removeVisual(bomba)
+	method efectoExplosion() {
+		// forEach para cada rama de la explosion
+		// forEach que pregunte con un solo for each y que genere flags por cada una de las direcciones
+		//self.efectoCentro
 		if(not game.getObjectsIn(position.left(1)).isEmpty())
 			if(game.getObjectsIn(position.left(1)).head().destruible())
 				game.removeVisual(game.getObjectsIn(position.left(1)).head())
@@ -121,9 +122,24 @@ class Bomba {
 		if(not game.getObjectsIn(position.right(1)).isEmpty())
 			if(game.getObjectsIn(position.right(1)).head().destruible())
 				game.removeVisual(game.getObjectsIn(position.right(1)).head())
+	}
+	
+	method image() { return imagenCentro}
+	method position() { return position}
+	
+}
+
+class Bomba {
+	var position
+	var imagenBomba = "Bomb1.png"
+	const poder
+	
+	method explotar(bomba){
+		game.removeVisual(bomba)
 				
-		const explosion = new Explosion(position = self.position()) 				
+		const explosion = new Explosion(position = self.position(), poderExplosion = poder) 				
 		explosion.animacion(explosion)
+		explosion.efectoExplosion()
 	}
 	
 	method animacion(bomba) {

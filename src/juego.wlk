@@ -45,7 +45,7 @@ object juego {
 //doble bucle, tipico de C
 	method agregarParedesLimite() {
 		new Range(start = 0, end = 20)
-		.forEach{x => new Range(start = 0, end = 20)
+		.forEach{x => new Range(start = 0, end = 16)
 			.forEach{y => if(self.esBorde(game.at(x, y)))
 	  			game.addVisual(new Pared(position = game.at(x,y), destruible = false))
 			}
@@ -61,7 +61,7 @@ object juego {
 	
 	method agregarParedesRompibles(){
 		new Range(start = 0, end = 20)
-		.forEach{x => new Range(start = 0, end = 20)
+		.forEach{x => new Range(start = 0, end = 16)
 			.forEach{y => if((0.randomUpTo(1))>=0.5 && self.esLugarVacio(game.at(x,y)))
 				game.addVisual(new Pared(position = game.at(x,y), destruible = true))
 			}
