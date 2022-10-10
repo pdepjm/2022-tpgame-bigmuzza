@@ -1,6 +1,14 @@
+import juego.*
+import bomber.*
+import direcciones.*
 
-test "testX" {
+describe "tests del juego"{
+	method initialize(){
+		
+	}
+	test "mover, si puede, los bombermans en todas las direcciones" {
 
-	assert.that(true)
+		assert.that(true)
 
+	}
 }
