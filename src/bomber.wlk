@@ -46,7 +46,7 @@ class Bomber {
 	} 
 	
 	method cambiarImagen(dir) {
-		if (dir == arriba) {
+		if (self.esIgualArriba(dir)) {
 			if(alternarArriba){
 				alternarArriba = false
 				imagenBomber = imgArriba
@@ -55,7 +55,7 @@ class Bomber {
 				alternarArriba = true
 				imagenBomber = imgArribaAlt
 			}
-		} else if (dir == abajo) {
+		} else if (self.esIgualAbajo(dir)) {
 			if(alternarAbajo){
 				alternarAbajo = false
 				imagenBomber = imgAbajo
@@ -64,7 +64,7 @@ class Bomber {
 				alternarAbajo = true
 				imagenBomber = imgAbajoAlt
 			}
-		} else if (dir == derecha) {
+		} else if (self.esIgualDerecha(dir)) {
 			if(alternarDerecha){
 				alternarDerecha = false
 				imagenBomber = imgDerecha
@@ -73,7 +73,7 @@ class Bomber {
 				alternarDerecha = true
 				imagenBomber = imgDerechaAlt
 			}
-		} else if (dir == izquierda) {
+		} else if (self.esIgualIzquierda(dir)) {
 			if(alternarIzquierda){
 				alternarIzquierda = false
 				imagenBomber = imgIzquierda
@@ -84,6 +84,11 @@ class Bomber {
 			}
 		}
 	}
+	
+	method esIgualArriba(dir) = dir == arriba
+	method esIgualAbajo(dir) = dir == abajo
+	method esIgualDerecha(dir) = dir == derecha
+	method esIgualIzquierda(dir) = dir == izquierda
 }
 
 const bomber1 = new Bomber(position = game.center().left(1), imagenBomber = "Bomber1.png", imgArriba = "Bomber1Up1.png", imgArribaAlt = "Bomber1Up2.png", imgAbajo = "Bomber1Down1.png", imgAbajoAlt = "Bomber1Down2.png", imgDerecha = "Bomber1Right1.png", imgDerechaAlt = "Bomber1Right2.png", imgIzquierda = "Bomber1Left1.png", imgIzquierdaAlt = "Bomber1Left2.png")
@@ -173,9 +178,13 @@ class Pared {
 	method destruible() { return destruible}
 }
 
-class ObjetoAgarrable{
-	var position
-	const image
-	method image() { return image}
-	method position() { return position}
+class PowerUp{
+	method efecto()
+	//method image() = image
+	//method position() = position
+}
+
+class MasBomba inherits PowerUp{
+	const image = "PlusBombPU.png"
+	method image() = image
 }
