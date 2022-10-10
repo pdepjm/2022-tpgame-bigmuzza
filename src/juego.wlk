@@ -26,9 +26,10 @@ object juego {
 	}
 	
 	method agregarObjetos() {
-		//game.addVisual(masBomba)
+		game.addVisual(masBomba)
 		game.addVisual(masPoderBomba)
 		game.addVisual(escudo)
+		game.addVisual(escudo2)
 		self.agregarParedesLimite()
 		self.agregarParedesRompibles()
 	}
@@ -36,14 +37,6 @@ object juego {
 //	method agregarAgarrable(){
 //		const agarrable = new ObjetoAgarrable(position = game.at(10,10), image = "bombaAgarrable.png") 
 //		game.addVisual(agarrable)
-//	}
-
-// otra opcion mas "normal" (?)
-//	method agregarPared() {
-//		new Range(start = 0, end = 19).forEach{value => game.addVisual(new Pared(position = game.at(value,0)))}
-//		new Range(start = 0, end = 19).forEach{value => game.addVisual(new Pared(position = game.at(0,value)))}
-//		new Range(start = 0, end = 19).forEach{value => game.addVisual(new Pared(position = game.at(19,value)))}
-//		new Range(start = 0, end = 19).forEach{value => game.addVisual(new Pared(position = game.at(value,19)))}
 //	}
 
 //doble bucle, tipico de C
@@ -102,5 +95,6 @@ object juego {
 		game.onCollideDo(masBomba, {bomber => bomber.obtener(masBomba)})
 		game.onCollideDo(masPoderBomba, {bomber => bomber.obtener(masPoderBomba)})
 		game.onCollideDo(escudo, {bomber => bomber.obtener(escudo)})
+		game.onCollideDo(escudo2, {bomber => bomber.obtener(escudo2)})
 	}
 }

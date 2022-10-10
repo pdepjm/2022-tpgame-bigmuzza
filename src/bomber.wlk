@@ -27,27 +27,22 @@ class Bomber {
 	method image() = imagenBomber
 	
 	method moverA(direccion) {
-		if ( self.direccionApuntadaEstaVacia(direccion) || self.direccionApuntadaEsUnBomber(direccion) || self.direccionApuntadaEsUnPowerUp(direccion) ) // hay que hacerlo en una sola pregunta xd
+		if (! self.direccionApuntadaEsUnaPared(direccion) && ! self.direccionApuntadaEsUnaBomba(direccion))
 			position = direccion.cambiarAPosicion(position, self)
 	}
 	
-	method direccionApuntadaEstaVacia(direccion) = game.getObjectsIn(direccion.siguientePosicion(position)).isEmpty() // bomber1 bomber2 esunPowerup esunaExplosion esta vacio (direccionALaQueAPuntaEstaHabilitada)
+	method direccionApuntadaEsUnaPared(direccion) = game.getObjectsIn(direccion.siguientePosicion(position)).toString() == "[a Pared]"
 	
-	method direccionApuntadaEsUnBomber(direccion) = (game.getObjectsIn(direccion.siguientePosicion(position)).head() == bomber1 || game.getObjectsIn(direccion.siguientePosicion(position)).head() == bomber2)
-	
-	method direccionApuntadaEsUnPowerUp(direccion) = (game.getObjectsIn(direccion.siguientePosicion(position)).head() == masBomba || game.getObjectsIn(direccion.siguientePosicion(position)).head() == masPoderBomba || game.getObjectsIn(direccion.siguientePosicion(position)).head() == escudo)
+	method direccionApuntadaEsUnaBomba(direccion) = game.getObjectsIn(direccion.siguientePosicion(position)).toString() == "[a Bomba]"
 	
 	method ponerBomba() {
-		// funcionalidad del pwUp
-		// compruebo si cant de bombas > 0
-		// si: resto 1 a cantBombas
-		// 	creo const bomba y hago todo lo que hace una bomba
-		// 	en el game.schedule(2901, ...) hago que la cantidad de bombas vuelva al estado incial
-		// end if
-		// sino: no pasa nada
-		const bomba = new Bomba(position = self.position(), poder = self.poderBomba())
-		bomba.animacion(bomba)
-		game.schedule(2900, {=> bomba.explotar(bomba)})
+		if (cantidadBombas > 0){
+			cantidadBombas -= 1
+			const bomba = new Bomba(position = self.position(), poder = self.poderBomba())
+			bomba.animacion(bomba)
+			game.schedule(2900, {=> bomba.explotar(bomba)})
+			game.schedule(2901, {self.masBombas()})
+		}
 	}
 	
 	method poderBomba() = poderBomba
@@ -66,6 +61,10 @@ class Bomber {
 	
 	method activarEscudo() {
 		tieneEscudo = true
+	}
+	
+	method desactivarEscudo() {
+		tieneEscudo = false
 	}
 	
 	method cambiarImagen(dir) {
@@ -173,6 +172,7 @@ class Bomba {
 		const explosion = new Explosion(position = self.position(), poderExplosion = poder) 				
 		explosion.animacion(explosion)
 		explosion.efectoExplosion()
+		const escudo = new Escudo(position = self.position())
 	}
 	
 	method animacion(bomba) {
@@ -237,15 +237,15 @@ class Escudo inherits PowerUp{
 	
 	override method efecto(persona) {
 		persona.activarEscudo()
-		// no se pude morir durante 10 segundos
-		// sacarle el escudo despues de los 10 segundos
+		game.schedule(10000, {persona.desactivarEscudo()})
+		game.schedule(10000, {game.say(bomber1, "ya no tengo escudo")})
 	}
 }
 
 const masBomba = new MasBomba(position = game.center().up(3))
 const masPoderBomba = new MasPoderBomba(position = game.center().up(5))
 const escudo = new Escudo(position = game.center().down(3))
-
+const escudo2 = new Escudo(position = game.center().down(5))
 
 
 
