@@ -19,19 +19,23 @@ class Bomber {
 	var alternarDerecha = true
 	var alternarIzquierda = true
 	var poderBomba = 1
+	var cantidadBombas = 1
+	var escudo = false
 	
 	method position() = position
 	
 	method image() = imagenBomber
 	
 	method moverA(direccion) {
-		if ( self.direccionApuntadaEstaVacia(direccion) || self.direccionApuntadaEsUnBomber(direccion) ) // hay que hacerlo en una sola pregunta xd
+		if ( self.direccionApuntadaEstaVacia(direccion) || self.direccionApuntadaEsUnBomber(direccion) || self.direccionApuntadaEsUnPowerUp(direccion) ) // hay que hacerlo en una sola pregunta xd
 			position = direccion.cambiarAPosicion(position, self)
 	}
 	
 	method direccionApuntadaEstaVacia(direccion) = game.getObjectsIn(direccion.siguientePosicion(position)).isEmpty() // bomber1 bomber2 esunPowerup esunaExplosion esta vacio (direccionALaQueAPuntaEstaHabilitada)
 	
 	method direccionApuntadaEsUnBomber(direccion) = (game.getObjectsIn(direccion.siguientePosicion(position)).head() == bomber1 || game.getObjectsIn(direccion.siguientePosicion(position)).head() == bomber2)
+	
+	method direccionApuntadaEsUnPowerUp(direccion) = (game.getObjectsIn(direccion.siguientePosicion(position)).head() == masBomba || game.getObjectsIn(direccion.siguientePosicion(position)).head() == masPoderBomba || game.getObjectsIn(direccion.siguientePosicion(position)).head() == escudoOb)
 	
 	method ponerBomba() {
 		const bomba = new Bomba(position = self.position(), poder = self.poderBomba())
@@ -43,7 +47,19 @@ class Bomber {
 	
 	method masPoderBomba() {
 		poderBomba += 1
-	} 
+	}
+	
+	method cantidadBombas() = cantidadBombas
+	
+	method masBombas() {
+		cantidadBombas += 1
+	}
+	
+	method escudo() = escudo
+	
+	method activarEscudo() {
+		escudo = true
+	}
 	
 	method cambiarImagen(dir) {
 		if (self.esIgualArriba(dir)) {
@@ -89,6 +105,11 @@ class Bomber {
 	method esIgualAbajo(dir) = dir == abajo
 	method esIgualDerecha(dir) = dir == derecha
 	method esIgualIzquierda(dir) = dir == izquierda
+	
+	method obtener(powerUp) {
+		powerUp.efecto(self)
+		game.removeVisual(powerUp)
+	}
 }
 
 const bomber1 = new Bomber(position = game.center().left(1), imagenBomber = "Bomber1.png", imgArriba = "Bomber1Up1.png", imgArribaAlt = "Bomber1Up2.png", imgAbajo = "Bomber1Down1.png", imgAbajoAlt = "Bomber1Down2.png", imgDerecha = "Bomber1Right1.png", imgDerechaAlt = "Bomber1Right2.png", imgIzquierda = "Bomber1Left1.png", imgIzquierdaAlt = "Bomber1Left2.png")
@@ -179,12 +200,46 @@ class Pared {
 }
 
 class PowerUp{
-	method efecto()
+	const position
+	method efecto(persona)
 	//method image() = image
-	//method position() = position
+	method position() = position
 }
 
 class MasBomba inherits PowerUp{
 	const image = "PlusBombPU.png"
 	method image() = image
+	
+	override method efecto(persona) {
+		persona.masBombas()
+	}
 }
+
+class MasPoderBomba inherits PowerUp{
+	const image = "UpgradeBombPU.png"
+	method image() = image
+	
+	override method efecto(persona) {
+		persona.masPoderBomba()
+	}
+}
+
+class Escudo inherits PowerUp{
+	const image = "ShieldPU.png"
+	method image() = image
+	
+	override method efecto(persona) {
+		persona.activarEscudo()
+	}
+}
+
+const masBomba = new MasBomba(position = game.center().up(3))
+const masPoderBomba = new MasPoderBomba(position = game.center().up(5))
+const escudoOb = new Escudo(position = game.center().down(3))
+
+
+
+
+
+
+

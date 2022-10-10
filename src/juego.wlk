@@ -8,6 +8,7 @@ object juego {
 		self.agregarPersonajes()
 		self.configurarTeclas()
 		self.agregarObjetos()
+		self.configurarAcciones()
 		game.start()
 	}
 	
@@ -21,12 +22,15 @@ object juego {
 	method agregarPersonajes() {
 		game.addVisual(bomber1)
 		game.addVisual(bomber2)
+		
 	}
 	
 	method agregarObjetos() {
 		self.agregarParedesLimite()
 		self.agregarParedesRompibles()
-//		self.agregarAgarrable()
+		game.addVisual(masBomba)
+		game.addVisual(masPoderBomba)
+		game.addVisual(escudoOb)
 	}
 	
 //	method agregarAgarrable(){
@@ -91,5 +95,12 @@ object juego {
 		keyboard.down().onPressDo({bomber2.moverA(abajo)}) 
 		keyboard.left().onPressDo({bomber2.moverA(izquierda)})
 		keyboard.enter().onPressDo({bomber2.ponerBomba()})
+	}
+	
+	method configurarAcciones() {
+		// el colide del bomber hace ruido con cualquier objeto con el que haga colide
+		game.onCollideDo(masBomba, {bomber => bomber.obtener(masBomba)})
+		game.onCollideDo(masPoderBomba, {bomber => bomber.obtener(masPoderBomba)})
+		game.onCollideDo(escudoOb, {bomber => bomber.obtener(escudoOb)})
 	}
 }
