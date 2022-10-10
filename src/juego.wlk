@@ -26,11 +26,11 @@ object juego {
 	}
 	
 	method agregarObjetos() {
+		//game.addVisual(masBomba)
+		game.addVisual(masPoderBomba)
+		game.addVisual(escudo)
 		self.agregarParedesLimite()
 		self.agregarParedesRompibles()
-		game.addVisual(masBomba)
-		game.addVisual(masPoderBomba)
-		game.addVisual(escudoOb)
 	}
 	
 //	method agregarAgarrable(){
@@ -101,6 +101,6 @@ object juego {
 		// el colide del bomber hace ruido con cualquier objeto con el que haga colide
 		game.onCollideDo(masBomba, {bomber => bomber.obtener(masBomba)})
 		game.onCollideDo(masPoderBomba, {bomber => bomber.obtener(masPoderBomba)})
-		game.onCollideDo(escudoOb, {bomber => bomber.obtener(escudoOb)})
+		game.onCollideDo(escudo, {bomber => bomber.obtener(escudo)})
 	}
 }

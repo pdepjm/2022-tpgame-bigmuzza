@@ -20,7 +20,7 @@ class Bomber {
 	var alternarIzquierda = true
 	var poderBomba = 1
 	var cantidadBombas = 1
-	var escudo = false
+	var tieneEscudo = false
 	
 	method position() = position
 	
@@ -35,9 +35,16 @@ class Bomber {
 	
 	method direccionApuntadaEsUnBomber(direccion) = (game.getObjectsIn(direccion.siguientePosicion(position)).head() == bomber1 || game.getObjectsIn(direccion.siguientePosicion(position)).head() == bomber2)
 	
-	method direccionApuntadaEsUnPowerUp(direccion) = (game.getObjectsIn(direccion.siguientePosicion(position)).head() == masBomba || game.getObjectsIn(direccion.siguientePosicion(position)).head() == masPoderBomba || game.getObjectsIn(direccion.siguientePosicion(position)).head() == escudoOb)
+	method direccionApuntadaEsUnPowerUp(direccion) = (game.getObjectsIn(direccion.siguientePosicion(position)).head() == masBomba || game.getObjectsIn(direccion.siguientePosicion(position)).head() == masPoderBomba || game.getObjectsIn(direccion.siguientePosicion(position)).head() == escudo)
 	
 	method ponerBomba() {
+		// funcionalidad del pwUp
+		// compruebo si cant de bombas > 0
+		// si: resto 1 a cantBombas
+		// 	creo const bomba y hago todo lo que hace una bomba
+		// 	en el game.schedule(2901, ...) hago que la cantidad de bombas vuelva al estado incial
+		// end if
+		// sino: no pasa nada
 		const bomba = new Bomba(position = self.position(), poder = self.poderBomba())
 		bomba.animacion(bomba)
 		game.schedule(2900, {=> bomba.explotar(bomba)})
@@ -55,10 +62,10 @@ class Bomber {
 		cantidadBombas += 1
 	}
 	
-	method escudo() = escudo
+	method tieneEscudo() = tieneEscudo
 	
 	method activarEscudo() {
-		escudo = true
+		tieneEscudo = true
 	}
 	
 	method cambiarImagen(dir) {
@@ -230,12 +237,14 @@ class Escudo inherits PowerUp{
 	
 	override method efecto(persona) {
 		persona.activarEscudo()
+		// no se pude morir durante 10 segundos
+		// sacarle el escudo despues de los 10 segundos
 	}
 }
 
 const masBomba = new MasBomba(position = game.center().up(3))
 const masPoderBomba = new MasPoderBomba(position = game.center().up(5))
-const escudoOb = new Escudo(position = game.center().down(3))
+const escudo = new Escudo(position = game.center().down(3))
 
 
 

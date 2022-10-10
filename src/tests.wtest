@@ -1,14 +1,81 @@
+import wollok.game.*
 import juego.*
 import bomber.*
 import direcciones.*
 
 describe "tests del juego"{
+	
 	method initialize(){
+	}
+	
+	test "mover bomberman hacia arriba" {
+		const posicionInicial = bomber1.position()
+		bomber1.moverA(arriba)
 		
-	}
-	test "mover, si puede, los bombermans en todas las direcciones" {
-
-		assert.that(true)
+		assert.that(bomber1.position() == posicionInicial.up(1))
 
 	}
+	
+	test "mover bomberman hacia abajo" {
+		const posicionInicial = bomber1.position()
+		bomber1.moverA(abajo)
+		
+		assert.that(bomber1.position() == posicionInicial.down(1))
+
+	}
+	
+	test "mover bomberman hacia izquierda" {
+		const posicionInicial = bomber1.position()
+		bomber1.moverA(izquierda)
+		
+		assert.that(bomber1.position() == posicionInicial.left(1))
+
+	}
+	
+	test "mover bomberman hacia derecha" {
+		const posicionInicial = bomber1.position()
+		bomber1.moverA(derecha)
+		
+		assert.that(bomber1.position() == posicionInicial.right(1))
+
+	}
+	
+	test "colocar bomba" {
+		const posicionInicial = bomber1.position()
+		bomber1.ponerBomba()
+		const objetos = game.getObjectsIn(posicionInicial)
+		
+		assert.that(objetos.any({objeto => objeto.image() == "Bomb1.png"}))
+	}
+	
+	test "powerup masBombas funciona" {
+		game.addVisual(masBomba)
+		const estadoInicial = bomber1.cantidadBombas()
+		bomber1.obtener(masBomba)
+		
+		assert.that(bomber1.cantidadBombas() > estadoInicial)
+	}
+	
+	test "powerup masPoderBomba funciona" {
+		game.addVisual(masPoderBomba)
+		const estadoInicial = bomber1.poderBomba()
+		bomber1.obtener(masPoderBomba)
+		
+		assert.that(bomber1.poderBomba() > estadoInicial)
+	}
+	
+	test "powerup escudo funciona" {
+		game.addVisual(escudo)
+		const estadoInicial = bomber1.tieneEscudo()
+		bomber1.obtener(escudo)
+		
+		assert.that(bomber1.tieneEscudo() != estadoInicial)
+	}
+	
+	// test de sacarle el escudo
+	// test de sacarle el escudo si pasa cierto tiempo
+	// test de perder
+	// test bomba explota
+	// test de si pongo todas las bombas no puedo poner mas
+	// 
 }
