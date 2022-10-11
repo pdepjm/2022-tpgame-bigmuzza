@@ -27,11 +27,8 @@ object juego {
 	}
 	
 	method agregarObjetos() {
-		game.addVisual(masBomba)
-		//game.addVisual(masPoderBomba)
-		game.addVisual(escudo)
-		game.addVisual(escudo2)
 		self.agregarScore()
+		tests.generarTestPowerUps()
 		self.agregarParedesLimite()
 		self.agregarParedesRompibles()
 	}
@@ -43,8 +40,9 @@ object juego {
 	  			game.addVisual(new ScoreBackground(position = game.at(x,y)))
 	  		}
 		}
-		game.addVisual(new ScoreName(position = game.at(0,16), image = "scoreBomber1r.png"))
-		game.addVisual(new ScoreName(position = game.at(0,15), image = "scoreBomber2r.png"))
+		game.addVisual(new Score(position = game.at(0,16), image = "scoreBomber1r.png"))
+		game.addVisual(new Score(position = game.at(0,15), image = "scoreBomber2r.png"))
+		visuales.agregar()
 	}
 
 //doble bucle, tipico de C
@@ -102,10 +100,5 @@ object juego {
 	}
 	
 	method configurarAcciones() {
-		// el colide del bomber hace ruido con cualquier objeto con el que haga colide
-		game.onCollideDo(masBomba, {bomber => bomber.obtener(masBomba)})
-		//game.onCollideDo(masPoderBomba, {bomber => bomber.obtener(masPoderBomba)})
-		game.onCollideDo(escudo, {bomber => bomber.obtener(escudo)})
-		game.onCollideDo(escudo2, {bomber => bomber.obtener(escudo2)})
 	}
 }

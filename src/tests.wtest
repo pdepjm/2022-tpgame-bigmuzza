@@ -49,6 +49,7 @@ describe "tests del juego"{
 	}
 	
 	test "powerup masBombas funciona" {
+		const masBomba = new MasBomba(position = game.center())
 		game.addVisual(masBomba)
 		const estadoInicial = bomber1.cantidadBombas()
 		bomber1.obtener(masBomba)
@@ -57,6 +58,7 @@ describe "tests del juego"{
 	}
 	
 	test "powerup masPoderBomba funciona" {
+		const masPoderBomba = new MasPoderBomba(position = game.center())
 		game.addVisual(masPoderBomba)
 		const estadoInicial = bomber1.poderBomba()
 		bomber1.obtener(masPoderBomba)
@@ -65,6 +67,7 @@ describe "tests del juego"{
 	}
 	
 	test "powerup escudo funciona" {
+		const escudo = new Escudo(position = game.center())
 		game.addVisual(escudo)
 		const estadoInicial = bomber1.tieneEscudo()
 		bomber1.obtener(escudo)

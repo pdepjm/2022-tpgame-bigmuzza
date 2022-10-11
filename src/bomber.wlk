@@ -207,16 +207,6 @@ class Pared {
 	method destruible() { return destruible}
 }
 
-class ScoreBackground {
-	const property position
-	const property image = "scoreBackground.png"
-}
-
-class ScoreName{
-	const property position
-	const property image
-}
-
 class PowerUp{
 	const position
 	method efecto(persona)
@@ -253,14 +243,39 @@ class Escudo inherits PowerUp{
 	}
 }
 
-const masBomba = new MasBomba(position = game.center().up(3))
-const masPoderBomba = new MasPoderBomba(position = game.center().up(5))
-const escudo = new Escudo(position = game.center().down(3))
-const escudo2 = new Escudo(position = game.center().down(5))
-//const escudo = new Escudo(position = self.position())
-//		game.addVisual(escudo)
-//		game.onCollideDo(escudo, {bomber => bomber.obtener(escudo)})
 
+object tests {
+	method generarTestPowerUps() {
+		const masBomba = new MasBomba(position = game.center().up(3))
+		game.addVisual(masBomba)
+		game.onCollideDo(masBomba, {bomber => bomber.obtener(masBomba)})
+		const masPoderBomba = new MasPoderBomba(position = game.center().up(5))
+		game.addVisual(masPoderBomba)
+		game.onCollideDo(masPoderBomba, {bomber => bomber.obtener(masPoderBomba)})
+		const escudo = new Escudo(position = game.center().down(3))
+		game.addVisual(escudo)
+		game.onCollideDo(escudo, {bomber => bomber.obtener(escudo)})
+	}
+}
+
+object visuales {
+	method agregar() {
+		const hpBomber1 = new Score(position = game.at(4,16), image = "hpFull.png")
+		const hpBomber2 = new Score(position = game.at(4,15), image = "hpFull.png")
+		game.addVisual(hpBomber1)
+		game.addVisual(hpBomber2)
+	}
+}
+
+class ScoreBackground {
+	const property position
+	const property image = "scoreBackground.png"
+}
+
+class Score{
+	const property position
+	var property image
+}
 
 
 
