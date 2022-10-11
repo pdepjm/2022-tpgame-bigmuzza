@@ -207,6 +207,16 @@ class Pared {
 	method destruible() { return destruible}
 }
 
+class ScoreBackground {
+	const property position
+	const property image = "scoreBackground.png"
+}
+
+class ScoreName{
+	const property position
+	const property image
+}
+
 class PowerUp{
 	const position
 	method efecto(persona)
