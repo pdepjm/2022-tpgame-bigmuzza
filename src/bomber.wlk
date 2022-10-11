@@ -238,8 +238,9 @@ class Escudo inherits PowerUp{
 	
 	override method efecto(persona) {
 		persona.activarEscudo()
+		visuales.agregar(persona)
 		game.schedule(10000, {persona.desactivarEscudo()})
-		game.schedule(10000, {game.say(bomber1, "ya no tengo escudo")})
+
 	}
 }
 
@@ -262,8 +263,19 @@ object visuales {
 	method agregar() {
 		const hpBomber1 = new Score(position = game.at(4,16), image = "hpFull.png")
 		const hpBomber2 = new Score(position = game.at(4,15), image = "hpFull.png")
+		
 		game.addVisual(hpBomber1)
 		game.addVisual(hpBomber2)
+	}
+	
+	method agregar(persona) {
+		const shieldBomber1 = new Score(position = game.at(6,16), image = "shield.png")
+		const shieldBomber2 = new Score(position = game.at(6,15), image = "shield.png")
+		
+		if (persona == bomber1)
+			game.addVisual(shieldBomber1)
+		else
+			game.addVisual(shieldBomber2)
 	}
 }
 
