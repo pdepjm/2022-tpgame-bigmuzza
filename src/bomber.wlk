@@ -27,9 +27,11 @@ class Bomber {
 	method image() = imagenBomber
 	
 	method moverA(direccion) {
-		if (! self.direccionApuntadaEsUnaPared(direccion) && ! self.direccionApuntadaEsUnaBomba(direccion))
+		if (self.direccionValida(direccion))
 			position = direccion.cambiarAPosicion(position, self)
 	}
+	
+	method direccionValida(direccion) = ! self.direccionApuntadaEsUnaPared(direccion) && ! self.direccionApuntadaEsUnaBomba(direccion)
 	
 	method direccionApuntadaEsUnaPared(direccion) = game.getObjectsIn(direccion.siguientePosicion(position)).toString() == "[a Pared]"
 	
@@ -172,7 +174,6 @@ class Bomba {
 		const explosion = new Explosion(position = self.position(), poderExplosion = poder) 				
 		explosion.animacion(explosion)
 		explosion.efectoExplosion()
-		const escudo = new Escudo(position = self.position())
 	}
 	
 	method animacion(bomba) {
@@ -246,7 +247,9 @@ const masBomba = new MasBomba(position = game.center().up(3))
 const masPoderBomba = new MasPoderBomba(position = game.center().up(5))
 const escudo = new Escudo(position = game.center().down(3))
 const escudo2 = new Escudo(position = game.center().down(5))
-
+//const escudo = new Escudo(position = self.position())
+//		game.addVisual(escudo)
+//		game.onCollideDo(escudo, {bomber => bomber.obtener(escudo)})
 
 
 
