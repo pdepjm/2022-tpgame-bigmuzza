@@ -11,6 +11,9 @@ class Bomber inherits EntidadPisable {
 	var cantidadBombas = 1
 	var tieneEscudo = false
 	var direccion = abajo
+	var cantidadVidas = 2
+	var vida = "hpFull.png"
+	const property destruible = true
 	
 	method position() = position
 	
@@ -57,11 +60,18 @@ class Bomber inherits EntidadPisable {
 	
 	method desactivarEscudo() {
 		tieneEscudo = false
+		//remover score de escudo
 	}
 	
 	method obtener(powerUp) {
 		powerUp.efecto(self)
 		game.removeVisual(powerUp)
+	}
+	
+	method cantidadVidas() = cantidadVidas
+	
+	method destruirse(){
+		hpBomber1.daniar(self)
 	}
 }
 
@@ -83,7 +93,8 @@ class Explosion inherits EntidadPisable{
 	
 	method explotarEnDireccion(dir){
 		if (poderExplosion > 0 and !self.hayIrrompibleEn(dir)){
-		
+			if(!game.getObjectsIn(dir.siguientePosicion(position)).isEmpty())
+				game.getObjectsIn(dir.siguientePosicion(position)).head().destruirse()
 			const nuevaEx = new Explosion(position = dir.siguientePosicion(position), poderExplosion=poderExplosion-1)
 			nuevaEx.animacion()
 			nuevaEx.explotarEnDireccion(dir)
@@ -213,10 +224,12 @@ object tests {
 	}
 }
 
+
+	const hpBomber1 = new Score(position = game.at(4,16), image = "hpFull.png")
+	const hpBomber2 = new Score(position = game.at(4,15), image = "hpFull.png")
+
 object visuales {
 	method agregar() {
-		const hpBomber1 = new Score(position = game.at(4,16), image = "hpFull.png")
-		const hpBomber2 = new Score(position = game.at(4,15), image = "hpFull.png")
 		
 		game.addVisual(hpBomber1)
 		game.addVisual(hpBomber2)
@@ -231,6 +244,7 @@ object visuales {
 		else
 			game.addVisual(shieldBomber2)
 	}
+	
 }
 
 class ScoreBackground {
@@ -241,6 +255,15 @@ class ScoreBackground {
 class Score{
 	const property position
 	var property image
+	
+	method daniar(bomber){
+		if (bomber.cantidadVidas() == 2)
+			image = "hpFull.png"
+		else if (bomber.cantidadVidas() == 1)
+			image = "hpHalf.png"
+		else (bomber.cantidadVidas() == 0)
+			image = "hpEmpty.png"
+	}
 }
 
 class EntidadPisable {
