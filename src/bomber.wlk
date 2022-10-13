@@ -142,17 +142,13 @@ class Explosion inherits PuedeSerPisado{
 		// forEach que pregunte con un solo for each y que genere flags por cada una de las direcciones
 		//self.efectoCentro
 		if(not game.getObjectsIn(position.left(1)).isEmpty())
-			if(game.getObjectsIn(position.left(1)).head().destruible())
-				game.removeVisual(game.getObjectsIn(position.left(1)).head())
+			game.getObjectsIn(position.left(1)).all({objeto => objeto.destruirse()})
 		if(not game.getObjectsIn(position.down(1)).isEmpty())
-			if(game.getObjectsIn(position.down(1)).head().destruible())
-				game.removeVisual(game.getObjectsIn(position.down(1)).head())
+			game.getObjectsIn(position.down(1)).all({objeto => objeto.destruirse()})
 		if(not game.getObjectsIn(position.up(1)).isEmpty())
-			if(game.getObjectsIn(position.up(1)).head().destruible())
-				game.removeVisual(game.getObjectsIn(position.up(1)).head())
+			game.getObjectsIn(position.up(1)).all({objeto => objeto.destruirse()})
 		if(not game.getObjectsIn(position.right(1)).isEmpty())
-			if(game.getObjectsIn(position.right(1)).head().destruible())
-				game.removeVisual(game.getObjectsIn(position.right(1)).head())
+			game.getObjectsIn(position.right(1)).all({objeto => objeto.destruirse()})
 	}
 	
 	method image() { return imagenCentro}
@@ -199,6 +195,11 @@ class Pared inherits NoPuedeSerPisado {
 			return "Brick.png"
 		else
 			return "Wall.png"
+	}
+	
+	method destruirse(){
+		if(destruible)
+			game.removeVisual(self)
 	}
 	method position() { return position}
 	method destruible() { return destruible}
