@@ -31,11 +31,8 @@ class Bomber {
 			position = direccion.cambiarAPosicion(position, self)
 	}
 	
-	method direccionValida(direccion) = ! self.direccionApuntadaEsUnaPared(direccion) && ! self.direccionApuntadaEsUnaBomba(direccion)
+	method direccionValida(direccion) = game.getObjectsIn(direccion.siguientePosicion(position)).all({objeto => objeto.esPisable()})
 	
-	method direccionApuntadaEsUnaPared(direccion) = game.getObjectsIn(direccion.siguientePosicion(position)).toString() == "[a Pared]"
-	
-	method direccionApuntadaEsUnaBomba(direccion) = game.getObjectsIn(direccion.siguientePosicion(position)).toString() == "[a Bomba]"
 	
 	method ponerBomba() {
 		if (cantidadBombas > 0){
@@ -123,7 +120,7 @@ class Bomber {
 const bomber1 = new Bomber(position = game.center().left(1), imagenBomber = "Bomber1.png", imgArriba = "Bomber1Up1.png", imgArribaAlt = "Bomber1Up2.png", imgAbajo = "Bomber1Down1.png", imgAbajoAlt = "Bomber1Down2.png", imgDerecha = "Bomber1Right1.png", imgDerechaAlt = "Bomber1Right2.png", imgIzquierda = "Bomber1Left1.png", imgIzquierdaAlt = "Bomber1Left2.png")
 const bomber2 = new Bomber(position = game.center().right(1), imagenBomber = "Bomber2.png", imgArriba = "Bomber2Up1.png", imgArribaAlt = "Bomber2Up2.png", imgAbajo = "Bomber2Down1.png", imgAbajoAlt = "Bomber2Down2.png", imgDerecha = "Bomber2Right1.png", imgDerechaAlt = "Bomber2Right2.png", imgIzquierda = "Bomber2Left1.png", imgIzquierdaAlt = "Bomber2Left2.png")
 
-class Explosion{
+class Explosion inherits PuedeSerPisado{
 	
 	var position 
 	var imagenCentro = "explosion1centro.png"
@@ -163,7 +160,7 @@ class Explosion{
 	
 }
 
-class Bomba {
+class Bomba inherits NoPuedeSerPisado{
 	var position
 	var imagenBomba = "Bomb1.png"
 	const poder
@@ -193,7 +190,7 @@ class Bomba {
 	method position() { return position}
 }
 
-class Pared {
+class Pared inherits NoPuedeSerPisado {
 	const position
 	const destruible
 	
@@ -207,7 +204,7 @@ class Pared {
 	method destruible() { return destruible}
 }
 
-class PowerUp{
+class PowerUp inherits PuedeSerPisado {
 	const position
 	method efecto(persona)
 	//method image() = image
@@ -289,6 +286,13 @@ class Score{
 	var property image
 }
 
+class PuedeSerPisado {
+	method esPisable() = true
+}
+
+class NoPuedeSerPisado {
+	method esPisable() = false
+}
 
 
 
