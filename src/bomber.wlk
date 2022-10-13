@@ -2,36 +2,29 @@ import wollok.game.*
 import juego.*
 import direcciones.*
 
-class Bomber {
+class Bomber inherits EntidadPisable {
 	
 	var position
-	var imagenBomber
-	var imgArriba
-	var imgArribaAlt
-	var imgAbajo
-	var imgAbajoAlt
-	var imgDerecha
-	var imgDerechaAlt
-	var imgIzquierda
-	var imgIzquierdaAlt
-	var alternarArriba = true
-	var alternarAbajo = true
-	var alternarDerecha = true
-	var alternarIzquierda = true
+	var nroBomber
+	var pieIzquierdo = true
 	var poderBomba = 1
 	var cantidadBombas = 1
 	var tieneEscudo = false
+	var direccion = abajo
 	
 	method position() = position
 	
-	method image() = imagenBomber
+	method image() = "Bomber" + nroBomber + direccion.imagenDelBomber(self) + (if(pieIzquierdo) "1" else "2") + ".png"
 	
-	method moverA(direccion) {
-		if (self.direccionValida(direccion))
-			position = direccion.cambiarAPosicion(position, self)
+	method moverA(dir) {
+		if (self.direccionValida(dir)){
+			direccion = dir
+			pieIzquierdo = !pieIzquierdo		
+			position = dir.siguientePosicion(position)
+		}
 	}
 	
-	method direccionValida(direccion) = game.getObjectsIn(direccion.siguientePosicion(position)).all({objeto => objeto.esPisable()})
+	method direccionValida(dir) = game.getObjectsIn(dir.siguientePosicion(position)).all({objeto => objeto.esPisable()})
 	
 	
 	method ponerBomba() {
@@ -66,68 +59,40 @@ class Bomber {
 		tieneEscudo = false
 	}
 	
-	method cambiarImagen(dir) {
-		if (self.esIgualArriba(dir)) {
-			if(alternarArriba){
-				alternarArriba = false
-				imagenBomber = imgArriba
-			}
-			else {
-				alternarArriba = true
-				imagenBomber = imgArribaAlt
-			}
-		} else if (self.esIgualAbajo(dir)) {
-			if(alternarAbajo){
-				alternarAbajo = false
-				imagenBomber = imgAbajo
-			}
-			else {
-				alternarAbajo = true
-				imagenBomber = imgAbajoAlt
-			}
-		} else if (self.esIgualDerecha(dir)) {
-			if(alternarDerecha){
-				alternarDerecha = false
-				imagenBomber = imgDerecha
-			}
-			else {
-				alternarDerecha = true
-				imagenBomber = imgDerechaAlt
-			}
-		} else if (self.esIgualIzquierda(dir)) {
-			if(alternarIzquierda){
-				alternarIzquierda = false
-				imagenBomber = imgIzquierda
-			}
-			else {
-				alternarIzquierda = true
-				imagenBomber = imgIzquierdaAlt
-			}
-		}
-	}
-	
-	method esIgualArriba(dir) = dir == arriba
-	method esIgualAbajo(dir) = dir == abajo
-	method esIgualDerecha(dir) = dir == derecha
-	method esIgualIzquierda(dir) = dir == izquierda
-	
 	method obtener(powerUp) {
 		powerUp.efecto(self)
 		game.removeVisual(powerUp)
 	}
 }
 
-const bomber1 = new Bomber(position = game.center().left(1), imagenBomber = "Bomber1.png", imgArriba = "Bomber1Up1.png", imgArribaAlt = "Bomber1Up2.png", imgAbajo = "Bomber1Down1.png", imgAbajoAlt = "Bomber1Down2.png", imgDerecha = "Bomber1Right1.png", imgDerechaAlt = "Bomber1Right2.png", imgIzquierda = "Bomber1Left1.png", imgIzquierdaAlt = "Bomber1Left2.png")
-const bomber2 = new Bomber(position = game.center().right(1), imagenBomber = "Bomber2.png", imgArriba = "Bomber2Up1.png", imgArribaAlt = "Bomber2Up2.png", imgAbajo = "Bomber2Down1.png", imgAbajoAlt = "Bomber2Down2.png", imgDerecha = "Bomber2Right1.png", imgDerechaAlt = "Bomber2Right2.png", imgIzquierda = "Bomber2Left1.png", imgIzquierdaAlt = "Bomber2Left2.png")
+const bomber1 = new Bomber(position = game.center().left(1), nroBomber = "1")
+const bomber2 = new Bomber(position = game.center().right(1), nroBomber = "2")
 
-class Explosion inherits PuedeSerPisado{
+class Explosion inherits EntidadPisable{
 	
 	var position 
 	var imagenCentro = "explosion1centro.png"
 	const poderExplosion
 	
-	method animacion(explosion) {
-		game.addVisual(explosion)
+	method explotar(){
+		self.animacion()
+		orientaciones.forEach({dir => 
+			self.explotarEnDireccion(dir)
+		})
+	}
+	
+	method explotarEnDireccion(dir){
+		if (poderExplosion > 0 and !self.hayIrrompibleEn(dir)){
+		
+			const nuevaEx = new Explosion(position = dir.siguientePosicion(position), poderExplosion=poderExplosion-1)
+			nuevaEx.animacion()
+			nuevaEx.explotarEnDireccion(dir)
+		}
+	}
+	
+	method animacion() {
+		//Animacion anterior
+		game.addVisual(self)
 		game.schedule(100, {=> imagenCentro = "explosion2centro.png"})
 		game.schedule(200, {=> imagenCentro = "explosion3centro.png"})
 		game.schedule(300, {=> imagenCentro = "explosion4centro.png"})
@@ -135,28 +100,20 @@ class Explosion inherits PuedeSerPisado{
 		game.schedule(500, {=> imagenCentro = "explosion2centro.png"})
 		game.schedule(600, {=> imagenCentro = "explosion1centro.png"})
 		game.schedule(700, {=> game.removeVisual(self)})
-	}
-	
-	method efectoExplosion() {
-		// forEach para cada rama de la explosion
-		// forEach que pregunte con un solo for each y que genere flags por cada una de las direcciones
-		//self.efectoCentro
-		if(not game.getObjectsIn(position.left(1)).isEmpty())
-			game.getObjectsIn(position.left(1)).all({objeto => objeto.destruirse()})
-		if(not game.getObjectsIn(position.down(1)).isEmpty())
-			game.getObjectsIn(position.down(1)).all({objeto => objeto.destruirse()})
-		if(not game.getObjectsIn(position.up(1)).isEmpty())
-			game.getObjectsIn(position.up(1)).all({objeto => objeto.destruirse()})
-		if(not game.getObjectsIn(position.right(1)).isEmpty())
-			game.getObjectsIn(position.right(1)).all({objeto => objeto.destruirse()})
+		
+		//Nueva animacion
 	}
 	
 	method image() { return imagenCentro}
 	method position() { return position}
 	
+	method hayIrrompibleEn(dir) {
+		 return game.getObjectsIn(dir.siguientePosicion(position)).any({objeto => !objeto.destruible()})
+	}
+	
 }
 
-class Bomba inherits NoPuedeSerPisado{
+class Bomba inherits EntidadNoPisable{
 	var position
 	var imagenBomba = "Bomb1.png"
 	const poder
@@ -165,8 +122,7 @@ class Bomba inherits NoPuedeSerPisado{
 		game.removeVisual(bomba)
 				
 		const explosion = new Explosion(position = self.position(), poderExplosion = poder) 				
-		explosion.animacion(explosion)
-		explosion.efectoExplosion()
+		explosion.explotar()
 	}
 	
 	method animacion(bomba) {
@@ -186,7 +142,7 @@ class Bomba inherits NoPuedeSerPisado{
 	method position() { return position}
 }
 
-class Pared inherits NoPuedeSerPisado {
+class Pared inherits EntidadNoPisable {
 	const position
 	const destruible
 	
@@ -205,7 +161,7 @@ class Pared inherits NoPuedeSerPisado {
 	method destruible() { return destruible}
 }
 
-class PowerUp inherits PuedeSerPisado {
+class PowerUp inherits EntidadPisable {
 	const position
 	method efecto(persona)
 	//method image() = image
@@ -287,11 +243,11 @@ class Score{
 	var property image
 }
 
-class PuedeSerPisado {
+class EntidadPisable {
 	method esPisable() = true
 }
 
-class NoPuedeSerPisado {
+class EntidadNoPisable {
 	method esPisable() = false
 }
 

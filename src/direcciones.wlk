@@ -1,39 +1,33 @@
 object arriba {
+	method imagenDelBomber(bomber) = "Up"
+	
 	method siguientePosicion(posicion){
 		return posicion.up(1)
-	} 
-	method cambiarAPosicion(posicion, bomber){
-		bomber.cambiarImagen(self)
-		return self.siguientePosicion(posicion)
 	} 
 }
 
 object abajo {
+	method imagenDelBomber(bomber) = "Down"
+	
 	method siguientePosicion(posicion){
 		return posicion.down(1)
 	}	
-	method cambiarAPosicion(posicion, bomber){
-		bomber.cambiarImagen(self)
-		return self.siguientePosicion(posicion)
-	} 
 }
 
 object derecha {
+	method imagenDelBomber(bomber) = "Right"
+	
 	method siguientePosicion(posicion){
 		return posicion.right(1)
 	}
-	method cambiarAPosicion(posicion, bomber){
-		bomber.cambiarImagen(self)
-		return self.siguientePosicion(posicion)
-	} 
 }
 
 object izquierda {
+	method imagenDelBomber(bomber) = "Left"
+	
 	method siguientePosicion(posicion){
 		return posicion.left(1)
 	}	
-	method cambiarAPosicion(posicion, bomber){
-		bomber.cambiarImagen(self)
-		return self.siguientePosicion(posicion)
-	} 
 }
+
+const orientaciones = [arriba, abajo, izquierda, derecha]
