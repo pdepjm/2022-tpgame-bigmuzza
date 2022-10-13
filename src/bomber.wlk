@@ -225,8 +225,8 @@ object tests {
 }
 
 
-	const hpBomber1 = new Score(position = game.at(4,16), image = "hpFull.png")
-	const hpBomber2 = new Score(position = game.at(4,15), image = "hpFull.png")
+	const hpBomber1 = new Score(position = game.at(4,16), bomber)
+	const hpBomber2 = new Score(position = game.at(4,15), )
 
 object visuales {
 	method agregar() {
@@ -254,15 +254,19 @@ class ScoreBackground {
 
 class Score{
 	const property position
-	var property image
+	var bomber
 	
-	method daniar(bomber){
-		if (bomber.cantidadVidas() == 2)
-			image = "hpFull.png"
-		else if (bomber.cantidadVidas() == 1)
-			image = "hpHalf.png"
-		else (bomber.cantidadVidas() == 0)
-			image = "hpEmpty.png"
+	method image(){
+		return "hp" + bomber.cantidadVidas()
+	}
+}
+
+class Escudo{
+	const property position
+	var bomber
+	
+	method image(){
+		return if bomber.tieneEscudo() "ksdhfjkja" else "ldkjasdfl"
 	}
 }
 
