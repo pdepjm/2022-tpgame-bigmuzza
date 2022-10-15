@@ -2,6 +2,14 @@ import wollok.game.*
 import juego.*
 import direcciones.*
 
+class EntidadPisable {
+	method esPisable() = true
+}
+
+class EntidadNoPisable {
+	method esPisable() = false
+}
+
 class Bomber inherits EntidadPisable {
 	
 	var position
@@ -9,15 +17,16 @@ class Bomber inherits EntidadPisable {
 	var pieIzquierdo = true
 	var poderBomba = 1
 	var cantidadBombas = 1
-	var tieneEscudo = false
+	var cantidadEscudos = 0
 	var direccion = abajo
 	var cantidadVidas = 2
-	var vida = "hpFull.png"
+	const posScore
 	const property destruible = true
 	
 	method position() = position
 	
-	method image() = "Bomber" + nroBomber + direccion.imagenDelBomber(self) + (if(pieIzquierdo) "1" else "2") + ".png"
+	method image() = if (cantidadVidas > 0) "Bomber" + nroBomber + direccion.imagenDelBomber(self) + (if(pieIzquierdo) "1" else "2") + ".png"
+					else "Bomber" + nroBomber + "Dead.png"
 	
 	method moverA(dir) {
 		if (self.direccionValida(dir)){
@@ -52,15 +61,15 @@ class Bomber inherits EntidadPisable {
 		cantidadBombas += 1
 	}
 	
-	method tieneEscudo() = tieneEscudo
+	method tieneEscudo() = cantidadEscudos > 0
 	
 	method activarEscudo() {
-		tieneEscudo = true
+		cantidadEscudos += 1
 	}
 	
 	method desactivarEscudo() {
-		tieneEscudo = false
-		//remover score de escudo
+		if (self.tieneEscudo())
+			cantidadEscudos -= 1
 	}
 	
 	method obtener(powerUp) {
@@ -71,18 +80,34 @@ class Bomber inherits EntidadPisable {
 	method cantidadVidas() = cantidadVidas
 	
 	method destruirse(){
-		hpBomber1.daniar(self)
+		if (self.tieneEscudo()) 
+			self.desactivarEscudo()
+		else cantidadVidas -= 1
+			
+	}
+	
+	method agregarScore(){
+		const hpBomber = new ScoreHp(position = game.at(4,17 - posScore), bomber = self)
+		game.addVisual(hpBomber)
+		
+		const shieldBomber = new ScoreEscudo(position = game.at(6,17 - posScore), bomber = self)
+		game.addVisual(shieldBomber)
 	}
 }
 
-const bomber1 = new Bomber(position = game.center().left(1), nroBomber = "1")
-const bomber2 = new Bomber(position = game.center().right(1), nroBomber = "2")
+const bomber1 = new Bomber(position = game.center().left(1), nroBomber = "1", posScore = 1)
+const bomber2 = new Bomber(position = game.center().right(1), nroBomber = "2", posScore = 2)
 
 class Explosion inherits EntidadPisable{
 	
 	var position 
 	var imagenCentro = "explosion1centro.png"
 	const poderExplosion
+	const property destruible = true
+	
+	method destruirse() = null
+	
+	method obtener(powerUp) = null
 	
 	method explotar(){
 		self.animacion()
@@ -115,6 +140,18 @@ class Explosion inherits EntidadPisable{
 		//Nueva animacion
 	}
 	
+	method animacion(dir) {
+		// mustra la animacion de los brazos de la explosion (como usamos recursividad no queda muy sincronizado ejje)
+		game.addVisual(self)
+		game.schedule(100, {=> imagenCentro = "explosion2mitad" + dir +".png"})
+		game.schedule(200, {=> imagenCentro = "explosion3mitad" + dir +".png"})
+		game.schedule(300, {=> imagenCentro = "explosion4mitad" + dir +".png"})
+		game.schedule(400, {=> imagenCentro = "explosion3mitad" + dir +".png"})
+		game.schedule(500, {=> imagenCentro = "explosion2mitad" + dir +".png"})
+		game.schedule(600, {=> imagenCentro = "explosion1mitad" + dir +".png"})
+		game.schedule(700, {=> game.removeVisual(self)})
+	}
+	
 	method image() { return imagenCentro}
 	method position() { return position}
 	
@@ -128,6 +165,11 @@ class Bomba inherits EntidadNoPisable{
 	var position
 	var imagenBomba = "Bomb1.png"
 	const poder
+	const property destruible = true
+	
+	method destruirse(){
+		self.explotar(self)
+	} 
 	
 	method explotar(bomba){
 		game.removeVisual(bomba)
@@ -156,7 +198,7 @@ class Bomba inherits EntidadNoPisable{
 class Pared inherits EntidadNoPisable {
 	const position
 	const destruible
-	
+	var valor = 0
 	method image() { 
 		if(destruible)
 			return "Brick.png"
@@ -167,7 +209,34 @@ class Pared inherits EntidadNoPisable {
 	method destruirse(){
 		if(destruible)
 			game.removeVisual(self)
+		self.generarPowerUp()
 	}
+	
+	method random() {valor = 0.randomUpTo(1)}  
+	
+	method generarPowerUp(){
+		self.random()
+		if ( valor >= 0.4) {
+			null
+		}
+		else {if (valor >= 0.2) {
+				const masBomba = new MasBomba(position = position)
+				game.addVisual(masBomba)
+				game.onCollideDo(masBomba, {bomber => bomber.obtener(masBomba)})
+			}
+			else if (valor >= 0.15) {
+					const masPoderBomba = new MasPoderBomba(position = position)
+					game.addVisual(masPoderBomba)
+					game.onCollideDo(masPoderBomba, {bomber => bomber.obtener(masPoderBomba)})
+				}
+				else {
+					const escudo = new Escudo(position = position)
+					game.addVisual(escudo)
+					game.onCollideDo(escudo, {bomber => bomber.obtener(escudo)})
+				}
+		}
+	}
+	
 	method position() { return position}
 	method destruible() { return destruible}
 }
@@ -177,6 +246,9 @@ class PowerUp inherits EntidadPisable {
 	method efecto(persona)
 	//method image() = image
 	method position() = position
+	
+	method destruible() = true
+	method destruirse() = null
 }
 
 class MasBomba inherits PowerUp{
@@ -203,7 +275,6 @@ class Escudo inherits PowerUp{
 	
 	override method efecto(persona) {
 		persona.activarEscudo()
-		visuales.agregar(persona)
 		game.schedule(10000, {persona.desactivarEscudo()})
 
 	}
@@ -224,58 +295,27 @@ object tests {
 	}
 }
 
-
-	const hpBomber1 = new Score(position = game.at(4,16), bomber)
-	const hpBomber2 = new Score(position = game.at(4,15), )
-
-object visuales {
-	method agregar() {
-		
-		game.addVisual(hpBomber1)
-		game.addVisual(hpBomber2)
-	}
-	
-	method agregar(persona) {
-		const shieldBomber1 = new Score(position = game.at(6,16), image = "shield.png")
-		const shieldBomber2 = new Score(position = game.at(6,15), image = "shield.png")
-		
-		if (persona == bomber1)
-			game.addVisual(shieldBomber1)
-		else
-			game.addVisual(shieldBomber2)
-	}
-	
-}
-
-class ScoreBackground {
-	const property position
-	const property image = "scoreBackground.png"
-}
-
-class Score{
+class Score {
 	const property position
 	var bomber
-	
-	method image(){
-		return "hp" + bomber.cantidadVidas()
+	method image()
+}
+
+class ScoreHp inherits Score{
+	override method image(){
+		return "hp" + bomber.cantidadVidas() + ".png"
 	}
 }
 
-class Escudo{
+class ScoreEscudo inherits Score{
+	override method image(){
+		return if (bomber.tieneEscudo()) "shield.png" else "scoreBackground.png"
+	}
+}
+
+class ScoreDef {
 	const property position
-	var bomber
-	
-	method image(){
-		return if bomber.tieneEscudo() "ksdhfjkja" else "ldkjasdfl"
-	}
-}
-
-class EntidadPisable {
-	method esPisable() = true
-}
-
-class EntidadNoPisable {
-	method esPisable() = false
+	const property image 
 }
 
 

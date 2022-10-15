@@ -28,7 +28,7 @@ object juego {
 	
 	method agregarObjetos() {
 		self.agregarScore()
-		tests.generarTestPowerUps()
+		//tests.generarTestPowerUps()
 		self.agregarParedesLimite()
 		self.agregarParedesRompibles()
 	}
@@ -37,12 +37,14 @@ object juego {
 		new Range(start = 0, end = 20)
 		.forEach{x => new Range(start = 14, end = 17)
 			.forEach{y => if(self.esScore(game.at(x, y)))
-	  			game.addVisual(new ScoreBackground(position = game.at(x,y)))
+	  			game.addVisual(new ScoreDef(position = game.at(x,y), image = "scoreBackground.png"))
 	  		}
 		}
-		game.addVisual(new Score(position = game.at(0,16), image = "scoreBomber1r.png"))
-		game.addVisual(new Score(position = game.at(0,15), image = "scoreBomber2r.png"))
-		visuales.agregar()
+		bomber1.agregarScore()
+		bomber2.agregarScore()
+		game.addVisual(new ScoreDef(position = game.at(0,16), image = "scoreBomber1r.png"))
+		game.addVisual(new ScoreDef(position = game.at(0,15), image = "scoreBomber2r.png"))
+		//visuales.agregar()
 	}
 
 //doble bucle, tipico de C
