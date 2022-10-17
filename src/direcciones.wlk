@@ -30,4 +30,4 @@ object izquierda {
 	}	
 }
 
-const orientaciones = [arriba, abajo, izquierda, derecha]
+const orientaciones = [arriba, izquierda, abajo, derecha]

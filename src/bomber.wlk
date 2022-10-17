@@ -25,8 +25,9 @@ class Bomber inherits EntidadPisable {
 	
 	method position() = position
 	
+	//Funcion re loca que elije el nombre de la foro haciendo magia
 	method image() = if (cantidadVidas > 0) "Bomber" + nroBomber + direccion.imagenDelBomber(self) + (if(pieIzquierdo) "1" else "2") + ".png"
-					else "Bomber" + nroBomber + "Dead.png"
+					 else 					"Bomber" + nroBomber + "Dead.png"
 	
 	method moverA(dir) {
 		if (self.direccionValida(dir) and self.bomberVivo()){
@@ -36,38 +37,31 @@ class Bomber inherits EntidadPisable {
 		}
 	}
 	
-	method bomberVivo() = cantidadVidas > 0
-	
 	method direccionValida(dir) = game.getObjectsIn(dir.siguientePosicion(position)).all({objeto => objeto.esPisable()})
 	
-	
 	method ponerBomba() {
-		if (cantidadBombas > 0){
+		if (cantidadBombas > 0 and self.bomberVivo()){
 			cantidadBombas -= 1
 			const bomba = new Bomba(position = self.position(), poder = self.poderBomba())
+			
 			bomba.animacion(bomba)
 			game.schedule(2900, {=> bomba.explotar(bomba)})
-			game.schedule(2901, {self.masBombas()})
+			//game.schedule(5000, {=> bomba.explotar(bomba)}) //Para probar funcionalidades
+			game.schedule(2901, {self.masBombas()}) //esto creo que iria en la bomba, no en el bomber
 		}
 	}
 	
 	method poderBomba() = poderBomba
 	
-	method masPoderBomba() {
-		poderBomba += 1
-	}
+	method masPoderBomba() {poderBomba += 1}
 	
 	method cantidadBombas() = cantidadBombas
 	
-	method masBombas() {
-		cantidadBombas += 1
-	}
+	method masBombas() {cantidadBombas += 1}
 	
 	method tieneEscudo() = cantidadEscudos > 0
 	
-	method activarEscudo() {
-		cantidadEscudos += 1
-	}
+	method activarEscudo() {cantidadEscudos += 1}
 	
 	method desactivarEscudo() {
 		if (self.tieneEscudo())
@@ -81,11 +75,12 @@ class Bomber inherits EntidadPisable {
 	
 	method cantidadVidas() = cantidadVidas
 	
+	method bomberVivo() = cantidadVidas > 0
+	
 	method destruirse(){
 		if (self.tieneEscudo()) 
 			self.desactivarEscudo()
 		else cantidadVidas -= 1
-			
 	}
 	
 	method agregarScore(){
@@ -95,6 +90,10 @@ class Bomber inherits EntidadPisable {
 		const shieldBomber = new ScoreEscudo(position = game.at(6,17 - posScore), bomber = self)
 		game.addVisual(shieldBomber)
 	}
+	
+	method explotar() = null
+	
+	method esBomba() = false
 }
 
 const bomber1 = new Bomber(position = game.center().left(1), nroBomber = "1", posScore = 1)
@@ -106,6 +105,8 @@ class Explosion inherits EntidadPisable{
 	var imagenCentro = "explosion1centro.png"
 	const poderExplosion
 	const property destruible = true
+	
+	method esBomba() = false
 	
 	method destruirse() = null
 	
@@ -122,27 +123,24 @@ class Explosion inherits EntidadPisable{
 		if (poderExplosion > 0 and !self.hayIrrompibleEn(dir)){
 			if(!game.getObjectsIn(dir.siguientePosicion(position)).isEmpty())
 				game.getObjectsIn(dir.siguientePosicion(position)).head().destruirse()
-			const nuevaEx = new Explosion(position = dir.siguientePosicion(position), poderExplosion=poderExplosion-1)
-			nuevaEx.animacion()
-			nuevaEx.explotarEnDireccion(dir)
+			const nuevaExplosion = new Explosion(position = dir.siguientePosicion(position), poderExplosion=poderExplosion-1)
+			nuevaExplosion.animacion()
+			nuevaExplosion.explotarEnDireccion(dir)
 		}
 	}
 	
 	method animacion() {
-		//Animacion anterior
-		game.addVisual(self)
+		if(!game.hasVisual(self)) game.addVisual(self) //Si ya hay una animacion de explosion en un íxel, no agrego otro para optimir el juego
 		game.schedule(100, {=> imagenCentro = "explosion2centro.png"})
 		game.schedule(200, {=> imagenCentro = "explosion3centro.png"})
 		game.schedule(300, {=> imagenCentro = "explosion4centro.png"})
 		game.schedule(400, {=> imagenCentro = "explosion3centro.png"})
 		game.schedule(500, {=> imagenCentro = "explosion2centro.png"})
 		game.schedule(600, {=> imagenCentro = "explosion1centro.png"})
-		game.schedule(700, {=> game.removeVisual(self)})
-		
-		//Nueva animacion
+		game.schedule(700, {=> if(game.hasVisual(self)) game.removeVisual(self)})
 	}
 	
-	method animacion(dir) {
+	/*method animacion(dir) { no se usa
 		// mustra la animacion de los brazos de la explosion (como usamos recursividad no queda muy sincronizado ejje)
 		game.addVisual(self)
 		game.schedule(100, {=> imagenCentro = "explosion2mitad" + dir +".png"})
@@ -152,13 +150,16 @@ class Explosion inherits EntidadPisable{
 		game.schedule(500, {=> imagenCentro = "explosion2mitad" + dir +".png"})
 		game.schedule(600, {=> imagenCentro = "explosion1mitad" + dir +".png"})
 		game.schedule(700, {=> game.removeVisual(self)})
-	}
+	}*/
 	
 	method image() { return imagenCentro}
 	method position() { return position}
 	
 	method hayIrrompibleEn(dir) {
-		 return game.getObjectsIn(dir.siguientePosicion(position)).any({objeto => !objeto.destruible()})
+		return game.getObjectsIn(dir.siguientePosicion(position)).any({objeto => !objeto.destruible()})
+	}
+	method hayExplosion(dir) {
+		return game.getObjectsIn(dir.siguientePosicion(position)).any({objeto => objeto.esExplosion()}) 
 	}
 	
 }
@@ -168,20 +169,29 @@ class Bomba inherits EntidadNoPisable{
 	var imagenBomba = "Bomb1.png"
 	const poder
 	const property destruible = true
+	var yaExplote = false
 	
 	method destruirse(){
 		self.explotar(self)
 	} 
 	
+	method esExplosion() = false
+	
+	method esBomba() = true
+	
 	method explotar(bomba){
-		game.removeVisual(bomba)
-				
-		const explosion = new Explosion(position = self.position(), poderExplosion = poder) 				
-		explosion.explotar()
+		if (!yaExplote) {
+        	yaExplote = true 
+       		if(game.hasVisual(bomba))
+			game.removeVisual(bomba)
+			const explosion = new Explosion(position = self.position(), poderExplosion = poder) 				
+			explosion.explotar()
+        }
 	}
 	
 	method animacion(bomba) {
 		game.addVisual(bomba)
+		game.onCollideDo(bomba, {objeto => if(objeto.esBomba()) objeto.explotar()})
 		game.schedule(333, {=> imagenBomba = "Bomb2.png"})
 		game.schedule(666, {=> imagenBomba = "Bomb3.png"})
 		game.schedule(999, {=> imagenBomba = "Bomb1.png"})
@@ -201,6 +211,9 @@ class Pared inherits EntidadNoPisable {
 	const position
 	const destruible
 	var valor = 0
+		
+	method esBomba() = false
+	
 	method image() { 
 		if(destruible)
 			return "Brick.png"
@@ -216,12 +229,12 @@ class Pared inherits EntidadNoPisable {
 	
 	method random() {valor = 0.randomUpTo(1)}  
 	
-	method generarPowerUp(){
+	/*method generarPowerUp(){
 		self.random()
-		if ( valor >= 0.4) {
+		if ( valor >= 0.4)
 			null
-		}
-		else {if (valor >= 0.2) {
+		else {
+			if (valor >= 0.2) {
 				const masBomba = new MasBomba(position = position)
 				game.addVisual(masBomba)
 				game.onCollideDo(masBomba, {bomber => bomber.obtener(masBomba)})
@@ -237,7 +250,30 @@ class Pared inherits EntidadNoPisable {
 					game.onCollideDo(escudo, {bomber => bomber.obtener(escudo)})
 				}
 		}
+	}*/
+	
+	method generarPowerUp(){ //la rehice porque no entedí la version anterior xd
+		self.random()
+		if(valor < 0.15){
+			const escudo = new Escudo(position = position)
+			game.addVisual(escudo)
+			game.onCollideDo(escudo, {bomber => bomber.obtener(escudo)})
+		} else if(valor >= 0.15 and valor < 0.2){
+			const masPoderBomba = new MasPoderBomba(position = position)
+			game.addVisual(masPoderBomba)
+			game.onCollideDo(masPoderBomba, {bomber => bomber.obtener(masPoderBomba)})
+		} else if(valor >= 0.2 and valor < 0.4){
+			const masBomba = new MasBomba(position = position)
+			game.addVisual(masBomba)
+			game.onCollideDo(masBomba, {bomber => bomber.obtener(masBomba)})
+		}
 	}
+	
+	/*method generarPowerUp(){ //para pruebas xd
+			const masBomba = new MasBomba(position = position)
+			game.addVisual(masBomba)
+			game.onCollideDo(masBomba, {bomber => bomber.obtener(masBomba)})
+	}*/
 	
 	method position() { return position}
 	method destruible() { return destruible}
@@ -248,6 +284,8 @@ class PowerUp inherits EntidadPisable {
 	method efecto(persona)
 	//method image() = image
 	method position() = position
+		
+	method esBomba() = false
 	
 	method destruible() = true
 	method destruirse() = null
@@ -281,7 +319,6 @@ class Escudo inherits PowerUp{
 
 	}
 }
-
 
 object tests {
 	method generarTestPowerUps() {
