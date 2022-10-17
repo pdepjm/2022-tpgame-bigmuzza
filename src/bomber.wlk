@@ -29,12 +29,14 @@ class Bomber inherits EntidadPisable {
 					else "Bomber" + nroBomber + "Dead.png"
 	
 	method moverA(dir) {
-		if (self.direccionValida(dir)){
+		if (self.direccionValida(dir) and self.bomberVivo()){
 			direccion = dir
 			pieIzquierdo = !pieIzquierdo		
 			position = dir.siguientePosicion(position)
 		}
 	}
+	
+	method bomberVivo() = cantidadVidas > 0
 	
 	method direccionValida(dir) = game.getObjectsIn(dir.siguientePosicion(position)).all({objeto => objeto.esPisable()})
 	

@@ -23,7 +23,6 @@ object juego {
 	method agregarPersonajes() {
 		game.addVisual(bomber1)
 		game.addVisual(bomber2)
-		
 	}
 	
 	method agregarObjetos() {
