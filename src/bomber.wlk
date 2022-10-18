@@ -45,9 +45,9 @@ class Bomber inherits EntidadPisable {
 			const bomba = new Bomba(position = self.position(), poder = self.poderBomba())
 			
 			bomba.animacion(bomba)
-			game.schedule(2900, {=> bomba.explotar(bomba)})
+			game.schedule(3000, {=> bomba.explotar(bomba)})
 			//game.schedule(5000, {=> bomba.explotar(bomba)}) //Para probar funcionalidades
-			game.schedule(2901, {self.masBombas()}) //esto creo que iria en la bomba, no en el bomber
+			game.schedule(3001, {self.masBombas()}) //esto creo que iria en la bomba, no en el bomber
 		}
 	}
 	
@@ -189,7 +189,7 @@ class Bomba inherits EntidadNoPisable{
         }
 	}
 	
-	method animacion(bomba) {
+	/*method animacion(bomba) { //animacion anterior
 		game.addVisual(bomba)
 		game.onCollideDo(bomba, {objeto => if(objeto.esBomba()) objeto.explotar()})
 		game.schedule(333, {=> imagenBomba = "Bomb2.png"})
@@ -201,6 +201,38 @@ class Bomba inherits EntidadNoPisable{
 		game.schedule(2333, {=> imagenBomba = "Bomb2.png"})
 		game.schedule(2666, {=> imagenBomba = "Bomb3.png"})
 		game.schedule(2999, {=> imagenBomba = "Bomb1.png"})
+	}*/
+	
+	method animacion(bomba) { //animacion nueva
+		//1.6 seg lento → 1 seg medio → 0.4 seg rapido
+		game.addVisual(bomba)
+		game.onCollideDo(bomba, {objeto => if(objeto.esBomba()) objeto.explotar()})
+		game.schedule(200,  {=> imagenBomba = "Bomb2.png"}) //Empieza lento
+		game.schedule(400,  {=> imagenBomba = "Bomb3.png"})
+		game.schedule(600,  {=> imagenBomba = "Bomb2.png"})
+		game.schedule(800,  {=> imagenBomba = "Bomb1.png"})
+		game.schedule(1000, {=> imagenBomba = "Bomb2.png"})
+		game.schedule(1200, {=> imagenBomba = "Bomb3.png"}) 
+		game.schedule(1400, {=> imagenBomba = "Bomb2.png"})
+		game.schedule(1600, {=> imagenBomba = "Bomb1.png"}) //Hasta aca lento
+		
+		game.schedule(1725, {=> imagenBomba = "Bomb2.png"}) //Empieza medio
+		game.schedule(1850, {=> imagenBomba = "Bomb3.png"})
+		game.schedule(1975, {=> imagenBomba = "Bomb2.png"})
+		game.schedule(2100, {=> imagenBomba = "Bomb1.png"})
+		game.schedule(2225, {=> imagenBomba = "Bomb2.png"})
+		game.schedule(2350, {=> imagenBomba = "Bomb3.png"}) 
+		game.schedule(2475, {=> imagenBomba = "Bomb2.png"})
+		game.schedule(2600, {=> imagenBomba = "Bomb1.png"}) //Hasta aca lento
+		
+		game.schedule(2650, {=> imagenBomba = "Bomb2.png"}) //Empieza medio
+		game.schedule(2700, {=> imagenBomba = "Bomb3.png"})
+		game.schedule(2750, {=> imagenBomba = "Bomb2.png"})
+		game.schedule(2800, {=> imagenBomba = "Bomb1.png"})
+		game.schedule(2850, {=> imagenBomba = "Bomb2.png"})
+		game.schedule(2900, {=> imagenBomba = "Bomb3.png"}) 
+		game.schedule(2950, {=> imagenBomba = "Bomb2.png"})
+		game.schedule(3000, {=> imagenBomba = "Bomb1.png"}) //Hasta aca lento
 	}
 	
 	method image() { return imagenBomba}

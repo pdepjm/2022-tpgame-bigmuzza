@@ -30,4 +30,10 @@ object izquierda {
 	}	
 }
 
-const orientaciones = [arriba, izquierda, abajo, derecha]
+object centro {	
+	method siguientePosicion(posicion){
+		return posicion
+	}	
+}
+
+const orientaciones = [arriba, izquierda, abajo, derecha, centro]
