@@ -8,7 +8,7 @@ object juego {
 		self.agregarPersonajes()
 		self.configurarTeclas()
 		self.agregarObjetos()
-		self.configurarAcciones()
+		//self.configurarAcciones()
 		game.start()
 	}
 	
@@ -46,7 +46,7 @@ object juego {
 		//visuales.agregar()
 	}
 
-//doble bucle, tipico de C
+	//doble bucle, tipico de C
 	method agregarParedesLimite() {
 		new Range(start = 0, end = 20)
 		.forEach{x => new Range(start = 0, end = 14)
@@ -66,7 +66,7 @@ object juego {
 	method agregarParedesRompibles(){
 		new Range(start = 0, end = 20)
 		.forEach{x => new Range(start = 0, end = 14)
-			.forEach{y => if((0.randomUpTo(1))>=0.5 && self.esLugarVacio(game.at(x,y)))
+			.forEach{y => if((0.randomUpTo(1))>=0.5 and (self.esLugarVacio(game.at(x,y))))
 				game.addVisual(new Pared(position = game.at(x,y), destruible = true))
 			}
 		}
@@ -78,11 +78,9 @@ object juego {
 	method esScore(posicion){
 		return (posicion.x() == 0 || posicion.x() == game.width()-1) || (posicion.y() == 0 || posicion.y() > game.height()-3)}
 		
-	method esLugarVacio(position){return game.getObjectsIn(position).isEmpty()}
+	method esLugarVacio(position) = game.getObjectsIn(position).isEmpty() and !self.esAreaSegura(bomber1, position) and !self.esAreaSegura(bomber2, position)
 	
-//	method esAreaSegura(position){
-//		return 
-//	}
+	method esAreaSegura(bomber, posicion) = (bomber == bomber1 and [game.at(1,1), game.at(1,2), game.at(2,1)].contains(posicion)) or (bomber == bomber2 and [game.at(18,13), game.at(19,13), game.at(19,12)].contains(posicion))
 	
 	method configurarTeclas() {
 		//Jugador 1: wasd + Espacio
@@ -98,8 +96,5 @@ object juego {
 		keyboard.down().onPressDo({bomber2.moverA(abajo)}) 
 		keyboard.left().onPressDo({bomber2.moverA(izquierda)})
 		keyboard.enter().onPressDo({bomber2.ponerBomba()})
-	}
-	
-	method configurarAcciones() {
 	}
 }

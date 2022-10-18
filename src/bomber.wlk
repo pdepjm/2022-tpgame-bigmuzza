@@ -96,8 +96,8 @@ class Bomber inherits EntidadPisable {
 	method esBomba() = false
 }
 
-const bomber1 = new Bomber(position = game.center().left(1), nroBomber = "1", posScore = 1)
-const bomber2 = new Bomber(position = game.center().right(1), nroBomber = "2", posScore = 2)
+const bomber1 = new Bomber(position = game.at(1,1), nroBomber = "1", posScore = 1)
+const bomber2 = new Bomber(position = game.at(19,13), nroBomber = "2", posScore = 2)
 
 class Explosion inherits EntidadPisable{
 	
