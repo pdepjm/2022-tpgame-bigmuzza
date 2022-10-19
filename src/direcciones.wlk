@@ -4,6 +4,8 @@ object arriba {
 	method siguientePosicion(posicion){
 		return posicion.up(1)
 	} 
+	
+	
 }
 
 object abajo {
@@ -31,6 +33,8 @@ object izquierda {
 }
 
 object centro {	
+	method imagenDelBomber(bomber) = "Center"
+	
 	method siguientePosicion(posicion){
 		return posicion
 	}	
