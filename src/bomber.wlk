@@ -30,7 +30,8 @@ class Bomber inherits EntidadPisable {
 	const property destruible = true
 
 	method position() = position
-
+	
+	method nroBomber() = nroBomber
 	// Funcion re loca que elije el nombre de la foro haciendo magia
 	method image() = if (cantidadVidas > 0) "Bomber" + nroBomber + direccion.imagenDelBomber(self) + (if(pieIzquierdo) "1" else "2") + ".png" else "Bomber" + nroBomber + "Dead.png"
 
@@ -98,10 +99,15 @@ class Bomber inherits EntidadPisable {
 	method destruirse(){if (self.tieneEscudo()) self.desactivarEscudo() else self.perderVida()}
 	
 	method perderVida(){
-		cantidadVidas -= 1
-		return if (cantidadVidas==0) self.morir()}
-	method morir(){
-		game.say(self, "perdiste burro")
+		if ((self.cantidadVidas())-1==0)
+			{cantidadVidas -= 1 self.perder()}
+		else cantidadVidas -= 1
+	}
+	
+	method perder(){
+		const ganador = new ScoreGanador(position =game.center().left(4) , bomber = self)
+		game.addVisual(ganador)
+		//ganador.ganador()
 	}
 
 	method agregarScore() {
@@ -447,5 +453,10 @@ class ScoreDef {
 	const property position
 	const property image
 
+}
+class ScoreGanador inherits Score{
+	
+	override method image() = if(bomber.nroBomber() == "1"){return "winBomber2.png"} else {return "winBomber1.png"}
+	
 }
 
