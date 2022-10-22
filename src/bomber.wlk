@@ -95,8 +95,13 @@ class Bomber inherits EntidadPisable {
 
 	method bomberVivo() = cantidadVidas > 0
 
-	method destruirse() {
-		if (self.tieneEscudo()) self.desactivarEscudo() else cantidadVidas -= 1
+	method destruirse(){if (self.tieneEscudo()) self.desactivarEscudo() else self.perderVida()}
+	
+	method perderVida(){
+		cantidadVidas -= 1
+		return if (cantidadVidas==0) self.morir()}
+	method morir(){
+		game.say(self, "perdiste burro")
 	}
 
 	method agregarScore() {
