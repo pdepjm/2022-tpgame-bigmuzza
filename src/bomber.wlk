@@ -52,7 +52,7 @@ class Bomber inherits EntidadPisable {
 	method direccionValida(dir) = game.getObjectsIn(dir.siguientePosicion(position)).all({ objeto => objeto.esPisable() })
 
 	method ponerBomba() {
-		if (cantidadBombas > 0 and self.bomberVivo()) {
+		if (cantidadBombas > 0 and self.bomberVivo() and !juego.hayGanador()) {
 			cantidadBombas -= 1
 			const bomba = new Bomba(position = self.position(), poder = self.poderBomba())
 			bomba.animacion(bomba)
@@ -99,15 +99,14 @@ class Bomber inherits EntidadPisable {
 	method destruirse(){if (self.tieneEscudo()) self.desactivarEscudo() else self.perderVida()}
 	
 	method perderVida(){
-		if ((self.cantidadVidas())-1==0)
+		if (self.cantidadVidas()-1 == 0) //si se queda sin vidas
 			{cantidadVidas -= 1 self.perder()}
 		else cantidadVidas -= 1
 	}
 	
 	method perder(){
-		const ganador = new ScoreGanador(position =game.center().left(4) , bomber = self)
-		game.addVisual(ganador)
-		//ganador.ganador()
+		const scoreGanador = new ScoreGanador(position = game.center().left(4), bomber = self)
+		game.addVisual(scoreGanador)
 	}
 
 	method agregarScore() {
@@ -155,7 +154,7 @@ class Explosion inherits EntidadPisable {
 	}
 
 	method animacion() {
-		if (!game.hasVisual(self)) game.addVisual(self) // Si ya hay una animacion de explosion en un íxel, no agrego otro para optimir el juego
+		if (!game.hasVisual(self)) game.addVisual(self) // Si ya hay una animacion de explosion en un píxel, no agrego otro
 		game.schedule(100, {=> imagenCentro = "explosion2centro.png"})
 		game.schedule(200, {=> imagenCentro = "explosion3centro.png"})
 		game.schedule(300, {=> imagenCentro = "explosion4centro.png"})
@@ -167,24 +166,9 @@ class Explosion inherits EntidadPisable {
 		})
 	}
 
-	/*method animacion(dir) { no se usa
-	 * 	// mustra la animacion de los brazos de la explosion (como usamos recursividad no queda muy sincronizado ejje)
-	 * 	game.addVisual(self)
-	 * 	game.schedule(100, {=> imagenCentro = "explosion2mitad" + dir +".png"})
-	 * 	game.schedule(200, {=> imagenCentro = "explosion3mitad" + dir +".png"})
-	 * 	game.schedule(300, {=> imagenCentro = "explosion4mitad" + dir +".png"})
-	 * 	game.schedule(400, {=> imagenCentro = "explosion3mitad" + dir +".png"})
-	 * 	game.schedule(500, {=> imagenCentro = "explosion2mitad" + dir +".png"})
-	 * 	game.schedule(600, {=> imagenCentro = "explosion1mitad" + dir +".png"})
-	 * 	game.schedule(700, {=> game.removeVisual(self)})
-	 }*/
-	method image() {
-		return imagenCentro
-	}
+	method image() = imagenCentro
 
-	method position() {
-		return position
-	}
+	method position() = position
 
 	method hayIrrompibleEn(dir) {
 		return game.getObjectsIn(dir.siguientePosicion(position)).any({ objeto => !objeto.destruible() })
@@ -221,7 +205,7 @@ class Bomba inherits EntidadNoPisable {
 		}
 	}
 
-	method animacion(bomba) { // animacion anterior
+	method animacion(bomba) {
 		game.addVisual(bomba)
 		game.onCollideDo(bomba, { objeto =>
 			if (objeto.esBomba()) objeto.explotar()
@@ -236,38 +220,7 @@ class Bomba inherits EntidadNoPisable {
 		game.schedule(2666, {=> imagenBomba = "Bomb3.png"})
 		game.schedule(2999, {=> imagenBomba = "Bomb1.png"})
 	}
-
-	/*method animacion(bomba) { //animacion nueva
-	 * 	//1.6 seg lento → 1 seg medio → 0.4 seg rapido
-	 * 	game.addVisual(bomba)
-	 * 	game.onCollideDo(bomba, {objeto => if(objeto.esBomba()) objeto.explotar()})
-	 * 	game.schedule(200,  {=> imagenBomba = "Bomb2.png"}) //Empieza lento
-	 * 	game.schedule(400,  {=> imagenBomba = "Bomb3.png"})
-	 * 	game.schedule(600,  {=> imagenBomba = "Bomb2.png"})
-	 * 	game.schedule(800,  {=> imagenBomba = "Bomb1.png"})
-	 * 	game.schedule(1000, {=> imagenBomba = "Bomb2.png"})
-	 * 	game.schedule(1200, {=> imagenBomba = "Bomb3.png"}) 
-	 * 	game.schedule(1400, {=> imagenBomba = "Bomb2.png"})
-	 * 	game.schedule(1600, {=> imagenBomba = "Bomb1.png"}) //Termina lento
-	 * 	
-	 * 	game.schedule(1725, {=> imagenBomba = "Bomb2.png"}) //Empieza medio
-	 * 	game.schedule(1850, {=> imagenBomba = "Bomb3.png"})
-	 * 	game.schedule(1975, {=> imagenBomba = "Bomb2.png"})
-	 * 	game.schedule(2100, {=> imagenBomba = "Bomb1.png"})
-	 * 	game.schedule(2225, {=> imagenBomba = "Bomb2.png"})
-	 * 	game.schedule(2350, {=> imagenBomba = "Bomb3.png"}) 
-	 * 	game.schedule(2475, {=> imagenBomba = "Bomb2.png"})
-	 * 	game.schedule(2600, {=> imagenBomba = "Bomb1.png"}) //Termina medio
-	 * 	
-	 * 	game.schedule(2650, {=> imagenBomba = "Bomb2.png"}) //Empieza rapido
-	 * 	game.schedule(2700, {=> imagenBomba = "Bomb3.png"})
-	 * 	game.schedule(2750, {=> imagenBomba = "Bomb2.png"})
-	 * 	game.schedule(2800, {=> imagenBomba = "Bomb1.png"})
-	 * 	game.schedule(2850, {=> imagenBomba = "Bomb2.png"})
-	 * 	game.schedule(2900, {=> imagenBomba = "Bomb3.png"}) 
-	 * 	game.schedule(2950, {=> imagenBomba = "Bomb2.png"})
-	 * 	game.schedule(3000, {=> imagenBomba = "Bomb1.png"}) //Termina rapido
-	 }*/
+	
 	method image() {
 		return imagenBomba
 	}
@@ -338,11 +291,6 @@ class Pared inherits EntidadNoPisable {
 		}
 	}
 
-	/*method generarPowerUp(){ //para pruebas xd
-	 * 		const masBomba = new MasBomba(position = position)
-	 * 		game.addVisual(masBomba)
-	 * 		game.onCollideDo(masBomba, {bomber => bomber.obtener(masBomba)})
-	 }*/
 	method position() {
 		return position
 	}
@@ -359,7 +307,6 @@ class PowerUp inherits EntidadPisable {
 
 	method efecto(persona)
 
-	// method image() = image
 	method position() = position
 
 	method esBomba() = false
@@ -371,11 +318,8 @@ class PowerUp inherits EntidadPisable {
 }
 
 class MasBomba inherits PowerUp {
-
 	const image = "PlusBombPU.png"
-
 	method image() = image
-
 	override method efecto(persona) {
 		persona.masBombas()
 	}
@@ -383,11 +327,8 @@ class MasBomba inherits PowerUp {
 }
 
 class MasPoderBomba inherits PowerUp {
-
 	const image = "UpgradeBombPU.png"
-
 	method image() = image
-
 	override method efecto(persona) {
 		persona.masPoderBomba()
 	}
@@ -395,11 +336,8 @@ class MasPoderBomba inherits PowerUp {
 }
 
 class Escudo inherits PowerUp {
-
 	const image = "ShieldPU.png"
-
 	method image() = image
-
 	override method efecto(persona) {
 		persona.activarEscudo()
 		game.schedule(10000, { persona.desactivarEscudo()})
@@ -420,7 +358,6 @@ object tests {
 		game.addVisual(escudo)
 		game.onCollideDo(escudo, { bomber => bomber.obtener(escudo)})
 	}
-
 }
 
 class Score {

@@ -8,7 +8,6 @@ object juego {
 		self.agregarPersonajes()
 		self.configurarTeclas()
 		self.agregarObjetos()
-		//self.configurarAcciones()
 		game.start()
 	}
 	
@@ -97,4 +96,6 @@ object juego {
 		keyboard.left().onPressDo({bomber2.moverA(izquierda)})
 		keyboard.enter().onPressDo({bomber2.ponerBomba()})
 	}
+	
+	method hayGanador() = !bomber1.bomberVivo() or !bomber2.bomberVivo()  
 }
