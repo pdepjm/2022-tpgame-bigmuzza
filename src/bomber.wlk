@@ -5,15 +5,11 @@ import soundProducer.*
 import soundManager.*
 
 class EntidadPisable {
-
 	method esPisable() = true
-
 }
 
 class EntidadNoPisable {
-
 	method esPisable() = false
-
 }
 
 class Bomber inherits EntidadPisable {
@@ -28,25 +24,31 @@ class Bomber inherits EntidadPisable {
 	var cantidadVidas = 2
 	const posScore
 	const property destruible = true
+	
+	method nuevaDireccion(nuevaDireccion){direccion = nuevaDireccion}
 
 	method position() = position
 	
 	method nroBomber() = nroBomber
-	// Funcion re loca que elije el nombre de la foro haciendo magia
+	// Funcion re loca que elije el nombre de la foto haciendo magia
 	method image() = if (cantidadVidas > 0) "Bomber" + nroBomber + direccion.imagenDelBomber(self) + (if(pieIzquierdo) "1" else "2") + ".png" else "Bomber" + nroBomber + "Dead.png"
 
 	method moverA(dir) {
 		if (self.direccionValida(dir) and self.bomberVivo()) {
 			direccion = dir // con esto cambiamos la imagen del bomber
 			if (pieIzquierdo) {
-				soundManager.playSound(new SoundEffect(path = './assets/woosh1.mp3'), false)
+				soundManager.playSound(woosh1, false)
 				pieIzquierdo = !pieIzquierdo
 			} else {
-				soundManager.playSound(new SoundEffect(path = './assets/woosh2.mp3'), false)
+				soundManager.playSound(woosh2, false)
 				pieIzquierdo = !pieIzquierdo
 			}
 			position = dir.siguientePosicion(position)
 		}
+	}
+	
+	method pie(){
+		pieIzquierdo = true
 	}
 
 	method direccionValida(dir) = game.getObjectsIn(dir.siguientePosicion(position)).all({ objeto => objeto.esPisable() })
@@ -58,10 +60,9 @@ class Bomber inherits EntidadPisable {
 			bomba.animacion(bomba)
 			game.schedule(2900, {=>
 				bomba.explotar(bomba)
-				soundManager.playSound(new SoundEffect(path = './assets/explosion.mp3'), false)
+				soundManager.playSound(explosion, false)
 			})
-				// game.schedule(5000, {=> bomba.explotar(bomba)}) //Para probar funcionalidades
-			game.schedule(2901, { self.masBombas()}) // esto creo que iria en la bomba, no en el bomber
+			game.schedule(2901, { self.masBombas()})
 		}
 	}
 
@@ -93,6 +94,10 @@ class Bomber inherits EntidadPisable {
 	}
 
 	method cantidadVidas() = cantidadVidas
+	
+	method cantidadVidas(cantidad){
+		cantidadVidas = cantidad
+	}
 
 	method bomberVivo() = cantidadVidas > 0
 
@@ -107,6 +112,8 @@ class Bomber inherits EntidadPisable {
 	method perder(){
 		const scoreGanador = new ScoreGanador(position = game.center().left(4), bomber = self)
 		game.addVisual(scoreGanador)
+		soundManager.stopAllSongs()
+		soundManager.playSound(new SoundEffect(path = './assets/victory.mp3'), true)
 	}
 
 	method agregarScore() {
@@ -119,12 +126,11 @@ class Bomber inherits EntidadPisable {
 	method explotar() = null
 
 	method esBomba() = false
+	
+	method moverAPosicion(nuevaPosicion){position = nuevaPosicion}
 
 }
 
-const bomber1 = new Bomber(position = game.at(1, 1), nroBomber = "1", posScore = 1)
-
-const bomber2 = new Bomber(position = game.at(19, 13), nroBomber = "2", posScore = 2)
 
 class Explosion inherits EntidadPisable {
 
@@ -197,7 +203,7 @@ class Bomba inherits EntidadNoPisable {
 	method esBomba() = true
 
 	method explotar(bomba) {
-		if (!yaExplote) {
+		if (!yaExplote || !juego.hayGanador()) {
 			yaExplote = true
 			if (game.hasVisual(bomba)) game.removeVisual(bomba)
 			const explosion = new Explosion(position = self.position(), poderExplosion = poder)
@@ -252,29 +258,7 @@ class Pared inherits EntidadNoPisable {
 		valor = 0.randomUpTo(1)
 	}
 
-	/*method generarPowerUp(){
-	 * 	self.random()
-	 * 	if ( valor >= 0.4)
-	 * 		null
-	 * 	else {
-	 * 		if (valor >= 0.2) {
-	 * 			const masBomba = new MasBomba(position = position)
-	 * 			game.addVisual(masBomba)
-	 * 			game.onCollideDo(masBomba, {bomber => bomber.obtener(masBomba)})
-	 * 		}
-	 * 		else if (valor >= 0.15) {
-	 * 				const masPoderBomba = new MasPoderBomba(position = position)
-	 * 				game.addVisual(masPoderBomba)
-	 * 				game.onCollideDo(masPoderBomba, {bomber => bomber.obtener(masPoderBomba)})
-	 * 			}
-	 * 			else {
-	 * 				const escudo = new Escudo(position = position)
-	 * 				game.addVisual(escudo)
-	 * 				game.onCollideDo(escudo, {bomber => bomber.obtener(escudo)})
-	 * 			}
-	 * 	}
-	 }*/
-	method generarPowerUp() { // la rehice porque no entedí la version anterior xd
+	method generarPowerUp() {
 		self.random()
 		if (valor < 0.15) {
 			const escudo = new Escudo(position = position)
@@ -340,6 +324,7 @@ class Escudo inherits PowerUp {
 	method image() = image
 	override method efecto(persona) {
 		persona.activarEscudo()
+		soundManager.playSound(shield, false)
 		game.schedule(10000, { persona.desactivarEscudo()})
 	}
 
@@ -393,7 +378,21 @@ class ScoreDef {
 }
 class ScoreGanador inherits Score{
 	
-	override method image() = if(bomber.nroBomber() == "1"){return "winBomber2.png"} else {return "winBomber1.png"}
+	override method image() = if(bomber.nroBomber() == "1")return "winBomber2.png" else return "winBomber1.png"
 	
 }
+
+
+//Bombers
+const bomber1 = new Bomber(position = game.at(1, 1), nroBomber = "1", posScore = 1)
+const bomber2 = new Bomber(position = game.at(19, 13), nroBomber = "2", posScore = 2)
+
+//Efectos de sonido
+const woosh1 = new SoundEffect(path = './assets/woosh1.mp3')
+const woosh2 = new SoundEffect(path = './assets/woosh2.mp3')
+const shield = new SoundEffect(path = './assets/shieldMusic.mp3')
+const explosion = new SoundEffect(path = './assets/explosion.mp3')
+
+//Musica
+const musica = new SoundEffect(path = './assets/gameMusic.mp3')
 
