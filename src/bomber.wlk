@@ -30,6 +30,7 @@ class Bomber inherits EntidadPisable {
 	method position() = position
 	
 	method nroBomber() = nroBomber
+	
 	// Funcion re loca que elije el nombre de la foto haciendo magia
 	method image() = if (cantidadVidas > 0) "Bomber" + nroBomber + direccion.imagenDelBomber(self) + (if(pieIzquierdo) "1" else "2") + ".png" else "Bomber" + nroBomber + "Dead.png"
 
@@ -47,9 +48,7 @@ class Bomber inherits EntidadPisable {
 		}
 	}
 	
-	method pie(){
-		pieIzquierdo = true
-	}
+	method pieInicial(){pieIzquierdo = true}
 
 	method direccionValida(dir) = game.getObjectsIn(dir.siguientePosicion(position)).all({ objeto => objeto.esPisable() })
 
@@ -67,25 +66,27 @@ class Bomber inherits EntidadPisable {
 	}
 
 	method poderBomba() = poderBomba
+	
+	method poderBomba(poder){poderBomba = poder}
 
-	method masPoderBomba() {
-		poderBomba += 1
-	}
+	method masPoderBomba() {poderBomba += 1}
+	
 
 	method cantidadBombas() = cantidadBombas
 
-	method masBombas() {
-		cantidadBombas += 1
-	}
+	method masBombas(cantidad) {cantidadBombas = cantidad}
+	
+	
+	method masBombas() {cantidadBombas += 1}
+	
 
 	method tieneEscudo() = cantidadEscudos > 0
 
-	method activarEscudo() {
-		cantidadEscudos += 1
-	}
+	method activarEscudo() {cantidadEscudos += 1}
 
 	method desactivarEscudo() {
-		if (self.tieneEscudo()) cantidadEscudos -= 1
+		if (self.tieneEscudo()) 
+			cantidadEscudos -= 1
 	}
 
 	method obtener(powerUp) {
@@ -95,13 +96,16 @@ class Bomber inherits EntidadPisable {
 
 	method cantidadVidas() = cantidadVidas
 	
-	method cantidadVidas(cantidad){
-		cantidadVidas = cantidad
-	}
+	method cantidadVidas(cantidad){cantidadVidas = cantidad}
 
 	method bomberVivo() = cantidadVidas > 0
 
-	method destruirse(){if (self.tieneEscudo()) self.desactivarEscudo() else self.perderVida()}
+	method destruirse(){
+		if (self.tieneEscudo()) 
+			self.desactivarEscudo() 
+		else 
+			self.perderVida()
+	}
 	
 	method perderVida(){
 		if (self.cantidadVidas()-1 == 0){ //si se queda sin vidas
@@ -131,6 +135,18 @@ class Bomber inherits EntidadPisable {
 	
 	method moverAPosicion(nuevaPosicion){position = nuevaPosicion}
 
+	method reiniciar(){
+		if(self == bomber1)
+			self.moverAPosicion(game.at(1,1))
+		else
+			self.moverAPosicion(game.at(19,13))
+		self.nuevaDireccion(centro)
+		self.pieInicial()
+		self.cantidadVidas(2)
+		self.desactivarEscudo()
+		self.masBombas(1)
+		self.poderBomba(1)
+	}
 }
 
 
@@ -388,6 +404,7 @@ class ScoreGanador inherits Score{
 //Bombers
 const bomber1 = new Bomber(position = game.at(1, 1), nroBomber = "1", posScore = 1)
 const bomber2 = new Bomber(position = game.at(19, 13), nroBomber = "2", posScore = 2)
+const bombers = [bomber1, bomber2]
 
 //Efectos de sonido
 const woosh1 = new SoundEffect(path = './assets/woosh1.mp3')
