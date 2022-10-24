@@ -355,9 +355,7 @@ class Score {
 
 	const property position
 	var bomber
-
 	method image()
-
 }
 
 class ScoreHp inherits Score {

@@ -43,9 +43,21 @@ describe "tests del juego"{
 	
 	//test el bomber choca contra paredes y bombas
 	test "bomber choca contra pared rompible" {
-		game.addVisual(paredRompible)
-		bomberTest
-		assert.that(not game.hasVisual(paredRompible))
+		game.addVisual(paredRompible2)
+		bomberTest.moverA(arriba)
+		assert.that(bomberTest.position() == game.center().left(1))
+	}
+	
+	test "bomber choca contra pared irrompible" {
+		game.addVisual(paredIrrompible2)
+		bomberTest.moverA(abajo)
+		assert.that(bomberTest.position() == game.center().left(1))
+	}
+	
+	test "bomber choca contra una bomba" {
+		game.addVisual(bombaTest)
+		bomberTest.moverA(derecha)
+		assert.that(bomberTest.position() == game.center().left(1))
 	}
 }
 
