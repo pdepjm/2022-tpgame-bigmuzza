@@ -38,10 +38,10 @@ class Bomber inherits EntidadPisable {
 		if (self.direccionValida(dir) and self.bomberVivo()) {
 			direccion = dir // con esto cambiamos la imagen del bomber
 			if (pieIzquierdo) {
-				soundManager.playSound(woosh1, false)
+				//game.sound(woosh1).play()
 				pieIzquierdo = !pieIzquierdo
 			} else {
-				soundManager.playSound(woosh2, false)
+				//game.sound(woosh2).play()
 				pieIzquierdo = !pieIzquierdo
 			}
 			position = dir.siguientePosicion(position)
@@ -59,7 +59,7 @@ class Bomber inherits EntidadPisable {
 			bomba.animacion(bomba)
 			game.schedule(2900, {=>
 				bomba.explotar(bomba)
-				soundManager.playSound(explosion, false)
+				//game.sound(efectoExplosion).play()
 			})
 			game.schedule(2901, { self.masBombas()})
 		}
@@ -70,16 +70,13 @@ class Bomber inherits EntidadPisable {
 	method poderBomba(poder){poderBomba = poder}
 
 	method masPoderBomba() {poderBomba += 1}
-	
 
 	method cantidadBombas() = cantidadBombas
 
 	method masBombas(cantidad) {cantidadBombas = cantidad}
 	
-	
 	method masBombas() {cantidadBombas += 1}
 	
-
 	method tieneEscudo() = cantidadEscudos > 0
 
 	method activarEscudo() {cantidadEscudos += 1}
@@ -119,7 +116,7 @@ class Bomber inherits EntidadPisable {
 		const scoreGanador = new ScoreGanador(position = game.center().left(4), bomber = self)
 		game.addVisual(scoreGanador)
 		soundManager.stopAllSongs()
-		soundManager.playSound(new SoundEffect(path = './assets/victory.mp3'), true)			
+		//soundManager.playSound(new SoundEffect(path = './assets/victory.mp3'), true)			
 	}
 
 	method agregarScore() {
@@ -342,7 +339,7 @@ class Escudo inherits PowerUp {
 	method image() = image
 	override method efecto(persona) {
 		persona.activarEscudo()
-		soundManager.playSound(shield, false)
+		//game.sound(efectoEscudo).play()
 		game.schedule(10000, { persona.desactivarEscudo()})
 	}
 
@@ -407,11 +404,13 @@ const bomber2 = new Bomber(position = game.at(19, 13), nroBomber = "2", posScore
 const bombers = [bomber1, bomber2]
 
 //Efectos de sonido
-const woosh1 = new SoundEffect(path = './assets/woosh1.mp3')
-const woosh2 = new SoundEffect(path = './assets/woosh2.mp3')
-const shield = new SoundEffect(path = './assets/shieldMusic.mp3')
-const explosion = new SoundEffect(path = './assets/explosion.mp3')
+const woosh1          = "woosh1.mp3"
+const woosh2          = "woosh2.mp3"
+const efectoEscudo    = "shieldMusic.mp3"
+const efectoExplosion = "explosion.mp3"
 
 //Musica
-const musica = new SoundEffect(path = './assets/gameMusic.mp3')
+//const musica = new SoundEffect(path = './assets/gameMusic.mp3')
+const musica = "gameMusic.mp3" 
+
 

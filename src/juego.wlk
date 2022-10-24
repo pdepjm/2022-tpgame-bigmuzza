@@ -3,6 +3,7 @@ import bomber.*
 import direcciones.*
 import soundProducer.*
 import soundManager.*
+import sonidos.*
 
 object juego {
 	
@@ -18,7 +19,12 @@ object juego {
 		self.configurarTeclas()
 		self.agregarPersonajes()
 		self.agregarObjetos()
+		//self.musicas()
 	}
+	
+	/*method musicas(){
+		game.sound(musicas).play()
+	}*/
 	
 	method configuracionJuego() {
 		game.title("BomberMan")
@@ -116,14 +122,16 @@ object juego {
 	
 	method reiniciarBombers(){bombers.forEach({ bomber => bomber.reiniciar()})}
 		
-	method alternarMusica(){
-		if(alternarMusica)
-			soundManager.playSong(musica, true)
+		
+	method alternarMusica(){		
+		if(!game.sound(musica).played())
+			game.sound(musica).play()
+			
+		if(game.sound(musica).paused())
+			game.sound(musica).play()
 		else
-			soundManager.stopAllSongs()
-		alternarMusica = !alternarMusica
+			game.sound(musica).pause()
 	}
-	
 	
 	method reiniciarJuego() {
 		game.clear()
@@ -134,5 +142,6 @@ object juego {
 	}  	
 }
 	
+
 		
 		
