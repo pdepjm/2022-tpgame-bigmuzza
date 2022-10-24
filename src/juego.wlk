@@ -1,13 +1,13 @@
 import wollok.game.*
 import bomber.*
 import direcciones.*
-import soundProducer.*
-import soundManager.*
-import sonidos.*
+//import soundProducer.*
+//import soundManager.*
+//import sonidos.*
 
 object juego {
 	
-	var alternarMusica = true
+	//var alternarMusica = true
 	
 	method iniciar() {
 		self.configuracion()
@@ -122,15 +122,13 @@ object juego {
 	
 	method reiniciarBombers(){bombers.forEach({ bomber => bomber.reiniciar()})}
 		
-		
-	method alternarMusica(){		
-		if(!game.sound(musica).played())
-			game.sound(musica).play()
-			
-		if(game.sound(musica).paused())
-			game.sound(musica).play()
+	method alternarMusica(){
+		if(musica.paused()) //Si la musica está pausada
+			musica.resume()
+		else if(musica.played()) //Si la musica se está reproduciendo
+			musica.pause()
 		else
-			game.sound(musica).pause()
+			musica.play()
 	}
 	
 	method reiniciarJuego() {
@@ -141,6 +139,7 @@ object juego {
 		self.reiniciarBombers()
 	}  	
 }
+
 	
 
 		

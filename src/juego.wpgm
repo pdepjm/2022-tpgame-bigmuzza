@@ -3,6 +3,7 @@ import bomber.*
 import juego.*
 
 
+
 program juego {
 	juego.iniciar()
 }

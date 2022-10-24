@@ -5,51 +5,23 @@ import direcciones.*
 import soundProducer.*
 import soundManager.*
 	
-  	//soundProducer.provider(soundProviderMock)	
 	
 describe "tests del juego"{
-
 	//Bomber
-	const bomberTest = new Bomber(position = game.origin(), nroBomber = "1", posScore = 1)
+	const bomberTest = new Bomber(position = game.center().left(1), nroBomber = "1", posScore = 1)
 	const posicionInicial = bomberTest.position()
 
 	//Bomba
-	const bombaTest = new Bomba(position = game.origin(), poder = 1)
+	const bombaTest = new Bomba(position = game.center(), poder = 1)
 	
 	//Pared
-	const paredRompible = new Pared(position = game.at(0,1), destruible = true)
-	
-	const paredIrrompible = new Pared(position = game.at(1,0), destruible = false)
+	const paredRompible   = new Pared(position = game.center().up(1), destruible = true)
+	const paredIrrompible = new Pared(position = game.center().down(1), destruible = false)
 	
 	//Power Ups
 	const escudo = new Escudo(position = game.origin())
-	const masBomba = new MasBomba(position = game.center())
-	const masPoderBomba = new MasPoderBomba(position = game.center())
-
-	/*test "mover bomberman hacia arriba" {
-		soundProducer.provider(soundProviderMock)
-		const posicionInicial = bomberTest.position()
-		bomberTest.moverA(arriba)
-		assert.that(bomberTest.position() == posicionInicial.up(1))
-	}
-	
-	test "mover bomberman hacia abajo" {
-		const posicionInicial = bomberTest.position()
-		bomberTest.moverA(abajo)
-		assert.that(bomberTest.position() == posicionInicial.down(1))
-	}
-	
-	test "mover bomberman hacia la izquierda" {
-		const posicionInicial = bomberTest.position()
-		bomberTest.moverA(izquierda)
-		assert.that(bomberTest.position() == posicionInicial.left(1))
-	}
-	
-	test "mover bomberman hacia la derecha" {
-		const posicionInicial = bomberTest.position()
-		bomberTest.moverA(derecha)
-		assert.that(bomberTest.position() == posicionInicial.right(1))
-	}*/
+	const masBomba = new MasBomba(position = game.origin())
+	const masPoderBomba = new MasPoderBomba(position = game.origin())
 	
 	test "bomber coloca una bomba" {
 		bomberTest.ponerBomba()
@@ -78,35 +50,65 @@ describe "tests del juego"{
 	}
 	
 	// test de sacarle el escudo
-	/*test "bomber con escudo lo pierde si la explosion lo daña" {
+	test "bomber con escudo lo pierde si la explosion lo daña" {
 		game.addVisual(escudo)
+		game.addVisual(bomberTest)
 		bomberTest.obtener(escudo)
-		bomberTest.ponerBomba()
-		//game.schedule(2901, {=> assert.that(!bomberTest.tieneEscudo())})
-	}*/
+		bombaTest.explotar(bombaTest)
+		assert.that(!bomberTest.tieneEscudo())
+	}
 	
-	// test de sacarle el escudo si pasa cierto tiempo
-
 	test "bomber con 0 vidas pierde" {
 		bomberTest.cantidadVidas(0)
 		assert.notThat(juego.hayGanador())
 	}
 	
-	// test de si pongo todas las bombas no puedo poner mas
+	test "destruccion de paredes irrompibles" {
+		game.addVisual(paredIrrompible)
+		bombaTest.explotar(bombaTest)
+		assert.that(game.hasVisual(paredIrrompible))
+	}
+	
+	test "destruccion de paredes rompibles" {
+		game.addVisual(paredRompible)
+		bombaTest.explotar(bombaTest)
+		assert.that(not game.hasVisual(paredRompible))
+	}
+	
 	test "si alcance el limite de bombas no puedo poner mas" {
 		bomberTest.ponerBomba()
 		bomberTest.moverA(arriba)
 		bomberTest.ponerBomba()
-		const posicionAuxiliar = bomberTest.position()
-		const objetos = game.getObjectsIn(posicionAuxiliar)
+		const objetos = game.getObjectsIn(bomberTest.position())
 		assert.notThat(objetos.any({objeto => objeto.image() == "Bomb1.png"}))
 	}
-
-	/*test "una bomba no destruye paredes irrompibles" {
-
-	}*/
 	
-	/*test "una bomba destruye paredes rompibles" {
+	//test el bomber choca contra paredes
+}
 
-	}*/
+describe "tests de powerUps"{
+	//Power Ups
+	const escudo = new Escudo(position = game.origin())
+	const masBomba = new MasBomba(position = game.origin())
+	const masPoderBomba = new MasPoderBomba(position = game.origin())
+
+	test "powerup masBombas aumenta la cantidad de bombas" {
+		game.addVisual(masBomba)
+		const estadoInicial = bomberTest.cantidadBombas()
+		bomberTest.obtener(masBomba)
+		assert.that(bomberTest.cantidadBombas() == estadoInicial+1)
+	}
+	
+	test "powerup masPoderBomba aumenta la potencia de la bomba" {
+		game.addVisual(masPoderBomba)
+		const estadoInicial = bomberTest.poderBomba()
+		bomberTest.obtener(masPoderBomba)
+		assert.that(bomberTest.poderBomba() == estadoInicial+1)
+	}
+	
+	test "powerup escudo funciona" {
+		game.addVisual(escudo)
+		bomberTest.obtener(escudo)
+		assert.that(bomberTest.tieneEscudo())
+	}
 }
