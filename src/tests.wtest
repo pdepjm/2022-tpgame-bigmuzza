@@ -13,8 +13,10 @@ describe "tests del juego"{
 	const bombaTest = new Bomba(position = game.center(), poder = 1)
 	
 	//Pared
-	const paredRompible   = new Pared(position = game.center().up(1), destruible = true)
-	const paredIrrompible = new Pared(position = game.center().down(1), destruible = false)
+	const paredRompible    = new Pared(position = game.center().up(1), destruible = true)
+	const paredRompible2   = new Pared(position = game.center().left(1).up(1), destruible = true)
+	const paredIrrompible  = new Pared(position = game.center().down(1), destruible = false)
+	const paredIrrompible2 = new Pared(position = game.center().left(1).down(1), destruible = false)
 	
 	test "bomber coloca una bomba" {
 		bomberTest.ponerBomba()
@@ -39,7 +41,12 @@ describe "tests del juego"{
 		assert.that(not game.hasVisual(paredRompible))
 	}
 	
-	//test el bomber choca contra paredes
+	//test el bomber choca contra paredes y bombas
+	test "bomber choca contra pared rompible" {
+		game.addVisual(paredRompible)
+		bomberTest
+		assert.that(not game.hasVisual(paredRompible))
+	}
 }
 
 describe "tests de powerUps"{
@@ -57,7 +64,7 @@ describe "tests de powerUps"{
 	
 	//Paredes
 	const paredRompible  = new Pared(position = game.center().up(1), destruible = true)
-	const paredRompible2 = new Pared(position = game.center().up(1), destruible = true)
+	const paredRompible2 = new Pared(position = game.center().up(2), destruible = true)
 
 	test "powerup masBombas aumenta la cantidad de bombas" {
 		game.addVisual(masBomba)
@@ -91,11 +98,11 @@ describe "tests de powerUps"{
 		assert.that(bomberTest.poderBomba() == estadoInicial+1)
 	}
 	
-	test "bomba con poder = 2 destruye con radio 2" {
+	test "bomba con poder = 2 destruye con radio = 2" {
 		game.addVisual(paredRompible)
 		game.addVisual(paredRompible2)
 		bombaTest2.explotar(bombaTest2)
-		assert.that(!game.hasVisual(paredRompible) and !game.hasVisual(paredRompible2))
+		assert.notThat(game.hasVisual(paredRompible) and game.hasVisual(paredRompible2))
 	}
 	
 	test "powerup escudo funciona" {
