@@ -2,6 +2,9 @@ import wollok.game.*
 import juego.*
 import bomber.*
 import direcciones.*
+import bomba.*
+import pared.*
+import powerups.*
 	
 	
 describe "tests del juego"{

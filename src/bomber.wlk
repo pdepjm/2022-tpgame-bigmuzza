@@ -1,14 +1,11 @@
 import wollok.game.*
 import juego.*
 import direcciones.*
+import entidades.*
+import powerups.*
+import bomba.*
+import score.*
 
-class EntidadPisable {
-	method esPisable() = true
-}
-
-class EntidadNoPisable {
-	method esPisable() = false
-}
 
 class Bomber inherits EntidadPisable {
 
@@ -152,246 +149,16 @@ class Bomber inherits EntidadPisable {
 }
 
 
-class Explosion inherits EntidadPisable {
-
-	var position
-	var imagenCentro = "explosion1centro.png"
-	const poderExplosion
-	const property destruible = true
-
-	method esBomba() = false
-
-	method destruirse() = null
-
-	method obtener(powerUp) = null
-
-	method explotar() {
-		self.animacion()
-		orientaciones.forEach({ dir => self.explotarEnDireccion(dir)})
-	}
-	
-	method explotarEnDireccion(dir) {
-		if (poderExplosion > 0 and !self.hayIrrompibleEn(dir)) {
-			if (!game.getObjectsIn(dir.siguientePosicion(position)).isEmpty() and !juego.hayGanador()) 
-				game.getObjectsIn(dir.siguientePosicion(position)).forEach({objeto => objeto.destruirse()})
-			const nuevaExplosion = new Explosion(position = dir.siguientePosicion(position), poderExplosion = poderExplosion - 1)
-			nuevaExplosion.animacion()
-			nuevaExplosion.explotarEnDireccion(dir)
-		}
-	}
-
-	method animacion() {
-		if (!game.hasVisual(self)) game.addVisual(self) // Si ya hay una animacion de explosion en un píxel, no agrego otro
-		game.schedule(100, {=> imagenCentro = "explosion2centro.png"})
-		game.schedule(200, {=> imagenCentro = "explosion3centro.png"})
-		game.schedule(300, {=> imagenCentro = "explosion4centro.png"})
-		game.schedule(400, {=> imagenCentro = "explosion3centro.png"})
-		game.schedule(500, {=> imagenCentro = "explosion2centro.png"})
-		game.schedule(600, {=> imagenCentro = "explosion1centro.png"})
-		game.schedule(700, {=>
-			if (game.hasVisual(self)) game.removeVisual(self)
-		})
-	}
-
-	method image() = imagenCentro
-
-	method position() = position
-
-	method hayIrrompibleEn(dir) {
-		return game.getObjectsIn(dir.siguientePosicion(position)).any({ objeto => !objeto.destruible() })
-	}
-
-	method hayExplosion(dir) {
-		return game.getObjectsIn(dir.siguientePosicion(position)).any({ objeto => objeto.esExplosion() })
-	}
-
-}
-
-class Bomba inherits EntidadNoPisable {
-
-	var position
-	var imagenBomba = "Bomb1.png"
-	const poder
-	const property destruible = true
-	var yaExplote = false
-
-	method destruirse() {
-		self.explotar(self)
-	}
-
-	method esExplosion() = false
-
-	method esBomba() = true
-
-	method explotar(bomba) {
-		if (!yaExplote || !juego.hayGanador()) {
-			yaExplote = true
-			if (game.hasVisual(bomba)) game.removeVisual(bomba)
-			const explosion = new Explosion(position = self.position(), poderExplosion = poder)
-			explosion.explotar()
-		}
-	}
-	
-	method animacion(bomba) {
-		game.addVisual(bomba)
-		game.onCollideDo(bomba, { objeto =>
-			if (objeto.esBomba()) objeto.explotar()
-		})
-		game.schedule(333, {=> imagenBomba = "Bomb2.png"})
-		game.schedule(666, {=> imagenBomba = "Bomb3.png"})
-		game.schedule(999, {=> imagenBomba = "Bomb1.png"})
-		game.schedule(1333, {=> imagenBomba = "Bomb2.png"})
-		game.schedule(1666, {=> imagenBomba = "Bomb3.png"})
-		game.schedule(1999, {=> imagenBomba = "Bomb1.png"})
-		game.schedule(2333, {=> imagenBomba = "Bomb2.png"})
-		game.schedule(2666, {=> imagenBomba = "Bomb3.png"})
-		game.schedule(2999, {=> imagenBomba = "Bomb1.png"})
-	}
-	
-	method image() {
-		return imagenBomba
-	}
-
-	method position() {
-		return position
-	}
-
-}
-
-class Pared inherits EntidadNoPisable {
-
-	const position
-	const destruible
-	var valor = 0
-
-	method esBomba() = false
-
-	method image() {
-		if (destruible) return "Brick.png" else return "Wall.png"
-	}
-
-	method destruirse() {
-		if (destruible) game.removeVisual(self)
-		self.generarPowerUp()
-	}
-
-	method random() {
-		valor = 0.randomUpTo(1)
-	}
-
-	method generarPowerUp() {
-		self.random()
-		if (valor < 0.15) {
-			const escudo = new Escudo(position = position)
-			game.addVisual(escudo)
-			game.onCollideDo(escudo, { bomber => bomber.obtener(escudo)})
-		} else if (valor >= 0.15 and valor < 0.2) {
-			const masPoderBomba = new MasPoderBomba(position = position)
-			game.addVisual(masPoderBomba)
-			game.onCollideDo(masPoderBomba, { bomber => bomber.obtener(masPoderBomba)})
-		} else if (valor >= 0.2 and valor < 0.4) {
-			const masBomba = new MasBomba(position = position)
-			game.addVisual(masBomba)
-			game.onCollideDo(masBomba, { bomber => bomber.obtener(masBomba)})
-		}
-	}
-
-	method position() {
-		return position
-	}
-
-	method destruible() {
-		return destruible
-	}
-
-}
-
-class PowerUp inherits EntidadPisable {
-
-	const position
-
-	method efecto(persona)
-
-	method position() = position
-
-	method esBomba() = false
-
-	method destruible() = true
-
-	method destruirse() = null
-
-}
-
-class MasBomba inherits PowerUp {
-	const image = "PlusBombPU.png"
-	method image() = image
-	override method efecto(persona) {
-		persona.masBombas()
-	}
-
-}
-
-class MasPoderBomba inherits PowerUp {
-	const image = "UpgradeBombPU.png"
-	method image() = image
-	override method efecto(persona) {
-		persona.masPoderBomba()
-	}
-
-}
-
-class Escudo inherits PowerUp {
-	const image = "ShieldPU.png"
-	method image() = image
-	override method efecto(persona) {
-		persona.activarEscudo()
-		//game.sound("shieldMusic.mp3").play()
-		game.schedule(10000, { persona.desactivarEscudo()})
-	}
-
-}
-
-class Score {
-
-	const property position
-	var bomber
-	method image()
-}
-
-class ScoreHp inherits Score {
-
-	override method image() {
-		return "hp" + bomber.cantidadVidas() + ".png"
-	}
-
-}
-
-class ScoreEscudo inherits Score {
-
-	override method image() {
-		return if (bomber.tieneEscudo()) "shield.png" else "scoreBackground.png"
-	}
-
-}
-
-class ScoreDef {
-
-	const property position
-	const property image
-
-}
-class ScoreGanador inherits Score{
-	
-	override method image() = if(bomber.nroBomber() == "1")return "winBomber2.png" else return "winBomber1.png"
-	
-}
 
 
-//Bombers
-const bomber1 = new Bomber(position = game.at(1, 1), nroBomber = "1", posScore = 1)
-const bomber2 = new Bomber(position = game.at(19, 13), nroBomber = "2", posScore = 2)
-const bombers = [bomber1, bomber2]
 
-//Musica
-const musica = game.sound("gameMusic.mp3")
+
+
+
+
+
+
+
+
+
 
