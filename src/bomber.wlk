@@ -1,8 +1,6 @@
 import wollok.game.*
 import juego.*
 import direcciones.*
-import soundProducer.*
-import soundManager.*
 
 class EntidadPisable {
 	method esPisable() = true
@@ -38,10 +36,10 @@ class Bomber inherits EntidadPisable {
 		if (self.direccionValida(dir) and self.bomberVivo()) {
 			direccion = dir // con esto cambiamos la imagen del bomber
 			pieIzquierdo = !pieIzquierdo
-			if (pieIzquierdo)
+			/*if (pieIzquierdo)
 				game.sound("woosh1.mp3").play()
 			else 
-				game.sound("woosh2.mp3").play()
+				game.sound("woosh2.mp3").play()*/
 			position = dir.siguientePosicion(position)
 		}
 		
@@ -58,7 +56,7 @@ class Bomber inherits EntidadPisable {
 			bomba.animacion(bomba)
 			game.schedule(2900, {=>
 				bomba.explotar(bomba)
-				game.sound("explosion.mp3").play()
+				//game.sound("explosion.mp3").play()
 			})
 			game.schedule(2901, { self.masBombas()})
 		}
@@ -114,8 +112,7 @@ class Bomber inherits EntidadPisable {
 	method perder(){
 		const scoreGanador = new ScoreGanador(position = game.center().left(4), bomber = self)
 		game.addVisual(scoreGanador)
-		soundManager.stopAllSongs()
-		game.sound("victory.mp3").play()			
+		//game.sound("victory.mp3").play()			
 	}
 
 	method agregarScore() {
@@ -339,7 +336,7 @@ class Escudo inherits PowerUp {
 	method image() = image
 	override method efecto(persona) {
 		persona.activarEscudo()
-		game.sound("shieldMusic.mp3").play()
+		//game.sound("shieldMusic.mp3").play()
 		game.schedule(10000, { persona.desactivarEscudo()})
 	}
 
@@ -386,12 +383,6 @@ class ScoreGanador inherits Score{
 const bomber1 = new Bomber(position = game.at(1, 1), nroBomber = "1", posScore = 1)
 const bomber2 = new Bomber(position = game.at(19, 13), nroBomber = "2", posScore = 2)
 const bombers = [bomber1, bomber2]
-
-//Efectos de sonido
-//const woosh1 = game.sound("woosh1.mp3")
-const woosh2 = game.sound("woosh2.mp3")
-const efectoEscudo = game.sound("shieldMusic.mp3")
-const efectoExplosion = game.sound("explosion.mp3")
 
 //Musica
 const musica = game.sound("gameMusic.mp3")

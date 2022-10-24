@@ -1,9 +1,6 @@
 import wollok.game.*
 import bomber.*
 import direcciones.*
-//import soundProducer.*
-//import soundManager.*
-//import sonidos.*
 
 object juego {
 	
