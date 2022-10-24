@@ -1,16 +1,30 @@
 import wollok.game.*
 import bomber.*
 import direcciones.*
+import soundProducer.*
+import soundManager.*
 
 object juego {
 	
+<<<<<<< HEAD
 	//var alternarMusica = true
+=======
+	var alternarMusica = true
+>>>>>>> branch 'master' of https://github.com/pdepjm/2022-tpgame-bigmuzza.git
 	
 	method iniciar() {
+<<<<<<< HEAD
 		self.configuracion()
+=======
+		self.configuracionInicial()
+		self.configurarTeclas()
+		self.agregarPersonajes()
+		self.agregarObjetos()
+>>>>>>> branch 'master' of https://github.com/pdepjm/2022-tpgame-bigmuzza.git
 		game.start()		
 	}
 	
+<<<<<<< HEAD
 	method configuracion(){
 		self.configuracionJuego()
 		self.configurarTeclas()
@@ -24,6 +38,9 @@ object juego {
 	}*/
 	
 	method configuracionJuego() {
+=======
+	method configuracionInicial() {
+>>>>>>> branch 'master' of https://github.com/pdepjm/2022-tpgame-bigmuzza.git
 		game.title("BomberMan")
 		game.width(21)
 		game.height(17)
@@ -60,7 +77,23 @@ object juego {
 		game.addVisual(bomber1)
 		game.addVisual(bomber2)
 	}
+<<<<<<< HEAD
 		
+=======
+	
+	method agregarPersonajesConPosicion() {
+		game.addVisualIn(bomber1, game.at(1, 1))
+		game.addVisualIn(bomber2, game.at(19, 13))
+	}
+	
+	
+	
+	method sacarPersonajes() {
+		game.removeVisual(bomber1)
+		game.removeVisual(bomber2)
+	}
+	
+>>>>>>> branch 'master' of https://github.com/pdepjm/2022-tpgame-bigmuzza.git
 	method agregarObjetos() {
 		self.agregarScore()
 		self.agregarParedesLimite()
@@ -119,6 +152,7 @@ object juego {
 	
 	method reiniciarBombers(){bombers.forEach({ bomber => bomber.reiniciar()})}
 		
+<<<<<<< HEAD
 	method alternarMusica(){
 		if(musica.paused()) //Si la musica está pausada
 			musica.resume()
@@ -126,18 +160,73 @@ object juego {
 			musica.pause()
 		else
 			musica.play()
+=======
+		//Jugador 2:  ↑ ↓ ← → + Enter
+		keyboard.right().onPressDo({bomber2.moverA(derecha)})
+		keyboard.up().onPressDo({bomber2.moverA(arriba)})
+		keyboard.down().onPressDo({bomber2.moverA(abajo)}) 
+		keyboard.left().onPressDo({bomber2.moverA(izquierda)})
+		keyboard.enter().onPressDo({bomber2.ponerBomba()})
+		
+		//ALterar musica
+		keyboard.m().onPressDo({self.alternarMusica()})
+		
+		//Cerrar juego
+		keyboard.q().onPressDo({game.stop()})
+		
+		//Reload game
+		keyboard.r().onPressDo({self.reiniciar()})
+>>>>>>> branch 'master' of https://github.com/pdepjm/2022-tpgame-bigmuzza.git
 	}
 	
+<<<<<<< HEAD
 	method reiniciarJuego() {
 		game.clear()
 		self.agregarObjetos()
 		self.agregarPersonajes()
 		self.configurarTeclas()
 		self.reiniciarBombers()
+=======
+	method hayGanador() = !bomber1.bomberVivo() or !bomber2.bomberVivo()
+	
+
+	method alternarMusica(){
+		
+		if(alternarMusica){
+			soundManager.playSong(musica, true)
+			alternarMusica = !alternarMusica
+		}
+		else{
+			soundManager.stopAllSongs()
+			alternarMusica = !alternarMusica
+		}
+	}
+	
+	method acomodarBombers(){
+		bomber1.moverAPosicion(game.at(1,1))
+		bomber1.nuevaDireccion(centro)
+		bomber1.pie()
+		
+		bomber2.moverAPosicion(game.at(19,13))
+		bomber2.nuevaDireccion(centro)
+		bomber2.pie()
+	}	
+	
+	method reiniciar() {
+		game.clear()
+		self.agregarObjetos()
+		self.agregarPersonajes()
+		self.acomodarBombers()
+		self.configurarTeclas()
+>>>>>>> branch 'master' of https://github.com/pdepjm/2022-tpgame-bigmuzza.git
 	}  	
 }
+<<<<<<< HEAD
 
 	
 
+=======
+	
+>>>>>>> branch 'master' of https://github.com/pdepjm/2022-tpgame-bigmuzza.git
 		
 		

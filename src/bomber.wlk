@@ -28,24 +28,43 @@ class Bomber inherits EntidadPisable {
 	method position() = position
 	
 	method nroBomber() = nroBomber
+<<<<<<< HEAD
 	
+=======
+>>>>>>> branch 'master' of https://github.com/pdepjm/2022-tpgame-bigmuzza.git
 	// Funcion re loca que elije el nombre de la foto haciendo magia
 	method image() = if (cantidadVidas > 0) "Bomber" + nroBomber + direccion.imagenDelBomber(self) + (if(pieIzquierdo) "1" else "2") + ".png" else "Bomber" + nroBomber + "Dead.png"
 
 	method moverA(dir) {
 		if (self.direccionValida(dir) and self.bomberVivo()) {
 			direccion = dir // con esto cambiamos la imagen del bomber
+<<<<<<< HEAD
 			pieIzquierdo = !pieIzquierdo
 			/*if (pieIzquierdo)
 				game.sound("woosh1.mp3").play()
 			else 
 				game.sound("woosh2.mp3").play()*/
+=======
+			if (pieIzquierdo) {
+				soundManager.playSound(woosh1, false)
+				pieIzquierdo = !pieIzquierdo
+			} else {
+				soundManager.playSound(woosh2, false)
+				pieIzquierdo = !pieIzquierdo
+			}
+>>>>>>> branch 'master' of https://github.com/pdepjm/2022-tpgame-bigmuzza.git
 			position = dir.siguientePosicion(position)
 		}
 		
 	}
 	
+<<<<<<< HEAD
 	method pieInicial(){pieIzquierdo = true}
+=======
+	method pie(){
+		pieIzquierdo = true
+	}
+>>>>>>> branch 'master' of https://github.com/pdepjm/2022-tpgame-bigmuzza.git
 
 	method direccionValida(dir) = game.getObjectsIn(dir.siguientePosicion(position)).all({ objeto => objeto.esPisable() })
 
@@ -56,7 +75,11 @@ class Bomber inherits EntidadPisable {
 			bomba.animacion(bomba)
 			game.schedule(2900, {=>
 				bomba.explotar(bomba)
+<<<<<<< HEAD
 				//game.sound("explosion.mp3").play()
+=======
+				soundManager.playSound(explosion, false)
+>>>>>>> branch 'master' of https://github.com/pdepjm/2022-tpgame-bigmuzza.git
 			})
 			game.schedule(2901, { self.masBombas()})
 		}
@@ -90,7 +113,13 @@ class Bomber inherits EntidadPisable {
 
 	method cantidadVidas() = cantidadVidas
 	
+<<<<<<< HEAD
 	method cantidadVidas(cantidad){cantidadVidas = cantidad}
+=======
+	method cantidadVidas(cantidad){
+		cantidadVidas = cantidad
+	}
+>>>>>>> branch 'master' of https://github.com/pdepjm/2022-tpgame-bigmuzza.git
 
 	method bomberVivo() = cantidadVidas > 0
 
@@ -112,7 +141,12 @@ class Bomber inherits EntidadPisable {
 	method perder(){
 		const scoreGanador = new ScoreGanador(position = game.center().left(4), bomber = self)
 		game.addVisual(scoreGanador)
+<<<<<<< HEAD
 		//game.sound("victory.mp3").play()			
+=======
+		soundManager.stopAllSongs()
+		soundManager.playSound(new SoundEffect(path = './assets/victory.mp3'), true)
+>>>>>>> branch 'master' of https://github.com/pdepjm/2022-tpgame-bigmuzza.git
 	}
 
 	method agregarScore() {
@@ -336,7 +370,11 @@ class Escudo inherits PowerUp {
 	method image() = image
 	override method efecto(persona) {
 		persona.activarEscudo()
+<<<<<<< HEAD
 		//game.sound("shieldMusic.mp3").play()
+=======
+		soundManager.playSound(shield, false)
+>>>>>>> branch 'master' of https://github.com/pdepjm/2022-tpgame-bigmuzza.git
 		game.schedule(10000, { persona.desactivarEscudo()})
 	}
 
@@ -379,6 +417,7 @@ class ScoreGanador inherits Score{
 	
 }
 
+<<<<<<< HEAD
 //Bombers
 const bomber1 = new Bomber(position = game.at(1, 1), nroBomber = "1", posScore = 1)
 const bomber2 = new Bomber(position = game.at(19, 13), nroBomber = "2", posScore = 2)
@@ -387,4 +426,19 @@ const bombers = [bomber1, bomber2]
 //Musica
 const musica = game.sound("gameMusic.mp3")
 
+=======
+
+//Bombers
+const bomber1 = new Bomber(position = game.at(1, 1), nroBomber = "1", posScore = 1)
+const bomber2 = new Bomber(position = game.at(19, 13), nroBomber = "2", posScore = 2)
+
+//Efectos de sonido
+const woosh1 = new SoundEffect(path = './assets/woosh1.mp3')
+const woosh2 = new SoundEffect(path = './assets/woosh2.mp3')
+const shield = new SoundEffect(path = './assets/shieldMusic.mp3')
+const explosion = new SoundEffect(path = './assets/explosion.mp3')
+
+//Musica
+const musica = new SoundEffect(path = './assets/gameMusic.mp3')
+>>>>>>> branch 'master' of https://github.com/pdepjm/2022-tpgame-bigmuzza.git
 
