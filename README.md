@@ -38,7 +38,7 @@ El juego consiste en dos PJ (personajes jugables), bombermans💣, los cuales se
 - Extras:
 	- tecla r: reinicia el juego 🔄
 	- tecla q: cierra el juego 🔚
-	- tecla m: enciende/apaga la música 🎶:
+	- tecla m: enciende/apaga la música 🎶
 
 <h3 align="center"> ℹ️ Otros ℹ️ </h3>
 
