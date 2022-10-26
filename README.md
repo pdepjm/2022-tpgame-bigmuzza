@@ -11,7 +11,9 @@
 
 <h2 align="center"> 📷📷 CAPTURAS DEL JUEGO 📷📷 </h2>
 
-(agregar gifs e imagenes)
+![partida](https://user-images.githubusercontent.com/71357842/198094940-1980cc1b-f521-4675-ba8e-5b6f68a54192.gif)
+![medio juego](https://user-images.githubusercontent.com/71357842/198099392-7cd7ac2e-3fd0-4f08-a61c-8bea2d8374f1.gif)
+![final juego](https://user-images.githubusercontent.com/71357842/198099378-fcf38d21-4d15-4f18-b428-1d4fc24c65f9.gif)
 
 <h2 align="center"> 🎮 Reglas de Juego / Instrucciones 🕹️ </h2>
 
