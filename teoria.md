@@ -300,5 +300,5 @@ method esLugarVacio(position) = game.getObjectsIn(position).isEmpty() and !self.
 Si eventualmente queremos cambiar la condición de esLugarVacio() es sencillo ya que agregamos otra condición, y gracias a que agregarParedesRompibles() está
 desacoplado no es necesario modificarlo también.
 
-<h2 align="center"> <a href="https://lucid.app/lucidchart/aa679c01-33ca-41ca-bd2e-046c527bec90/edit?viewport_loc=-2708%2C-1729%2C3521%2C1606%2CCnGZs9scU0ZU&invitationId=inv_68db0409-6a3b-4fc0-a6bb-51601669ba4b"> Diagrama de clases estatico</a> </h2>
+<h2 align="center"> <a href="https://lucid.app/lucidchart/aa679c01-33ca-41ca-bd2e-046c527bec90/edit?viewport_loc=-2708%2C-1729%2C3521%2C1606%2CCnGZs9scU0ZU&invitationId=inv_68db0409-6a3b-4fc0-a6bb-51601669ba4b" target="_blank"> Diagrama de clases estatico</a> </h2>
 
