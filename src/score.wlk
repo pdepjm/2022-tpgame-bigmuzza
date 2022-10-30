@@ -25,8 +25,8 @@ class ScoreDef {
 
 	const property position
 	const property image
-
 }
+
 class ScoreGanador inherits Score{
 	
 	override method image() = if(bomber.nroBomber() == "1")return "winBomber2.png" else return "winBomber1.png"

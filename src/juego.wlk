@@ -107,7 +107,7 @@ object juego {
 		
 	method esLugarVacio(position) = game.getObjectsIn(position).isEmpty() and !self.esAreaSegura(bomber1, position) and !self.esAreaSegura(bomber2, position)
 	
-	method esAreaSegura(bomber, posicion) = (bomber == bomber1 and [game.at(1,1), game.at(1,2), game.at(2,1)].contains(posicion)) or (bomber == bomber2 and [game.at(18,13), game.at(19,13), game.at(19,12)].contains(posicion))
+	method esAreaSegura(bomber, posicion) = (bomber == bomber1 and areaSeguraBomber1.contains(posicion)) or (bomber == bomber2 and areaSeguraBomber2.contains(posicion))
 	
 	method hayGanador() = !bomber1.bomberVivo() or !bomber2.bomberVivo()
 	
@@ -136,6 +136,10 @@ object juego {
 const bomber1 = new Bomber(position = game.at(1, 1), nroBomber = "1", posScore = 1)
 const bomber2 = new Bomber(position = game.at(19, 13), nroBomber = "2", posScore = 2)
 const bombers = [bomber1, bomber2]
+
+//Area segura
+const areaSeguraBomber1 = [game.at(1,1),   game.at(1,2),   game.at(2,1)]
+const areaSeguraBomber2 = [game.at(18,13), game.at(19,13), game.at(19,12)]
 
 //Musica
 const musica = game.sound("gameMusic.mp3")

@@ -32,7 +32,6 @@ class MasPoderBomba inherits PowerUp {
 	override method efecto(persona) {
 		persona.masPoderBomba()
 	}
-
 }
 
 class Escudo inherits PowerUp {

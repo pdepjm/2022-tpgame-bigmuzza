@@ -3,9 +3,7 @@ object arriba {
 	
 	method siguientePosicion(posicion){
 		return posicion.up(1)
-	} 
-	
-	
+	} 	
 }
 
 object abajo {

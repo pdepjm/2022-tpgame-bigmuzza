@@ -22,24 +22,25 @@ class Pared inherits EntidadNoPisable {
 	method random() {
 		valor = 0.randomUpTo(1)
 	}
-
+	
 	method generarPowerUp() {
 		self.random()
-		if (valor < 0.15) {
-			const escudo = new Escudo(position = position)
-			game.addVisual(escudo)
-			game.onCollideDo(escudo, { bomber => bomber.obtener(escudo)})
-		} else if (valor >= 0.15 and valor < 0.2) {
-			const masPoderBomba = new MasPoderBomba(position = position)
-			game.addVisual(masPoderBomba)
-			game.onCollideDo(masPoderBomba, { bomber => bomber.obtener(masPoderBomba)})
-		} else if (valor >= 0.2 and valor < 0.4) {
-			const masBomba = new MasBomba(position = position)
-			game.addVisual(masBomba)
-			game.onCollideDo(masBomba, { bomber => bomber.obtener(masBomba)})
+			if (valor < 0.4) { 
+			const power = self.crearPowerUp() 
+			game.addVisual(power) 
+			game.onCollideDo(power, { bomber => bomber.obtener(power)})
 		}
 	}
-
+	
+	method crearPowerUp(){
+		if (valor < 0.15)
+			return new Escudo(position = position)
+		else if (valor >= 0.15 and valor < 0.2)
+			return new MasPoderBomba(position = position)
+		else
+			return new MasBomba(position = position)
+	}	
+	
 	method position() {
 		return position
 	}
