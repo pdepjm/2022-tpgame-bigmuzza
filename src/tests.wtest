@@ -1,6 +1,136 @@
+import wollok.game.*
+import juego.*
+import bomber.*
+import direcciones.*
+import bomba.*
+import pared.*
+import powerups.*
+	
+	
+describe "tests del juego"{
+	//Bomber
+	const bomberTest = new Bomber(position = game.center().left(1), nroBomber = "1", posScore = 1)
+	const posicionInicial = bomberTest.position()
 
-test "testX" {
+	//Bomba
+	const bombaTest = new Bomba(position = game.center(), poder = 1)
+	
+	//Pared
+	const paredRompible    = new Pared(position = game.center().up(1), destruible = true)
+	const paredRompible2   = new Pared(position = game.center().left(1).up(1), destruible = true)
+	const paredIrrompible  = new Pared(position = game.center().down(1), destruible = false)
+	const paredIrrompible2 = new Pared(position = game.center().left(1).down(1), destruible = false)
+	
+	test "bomber coloca una bomba" {
+		bomberTest.ponerBomba()
+		const objetos = game.getObjectsIn(posicionInicial)
+		assert.that(objetos.any({objeto => objeto.image() == "Bomb1.png"}))
+	}
+	
+	test "bomber con 0 vidas pierde" {
+		bomberTest.cantidadVidas(0)
+		assert.notThat(juego.hayGanador())
+	}
+	
+	test "destruccion de paredes irrompibles" {
+		game.addVisual(paredIrrompible)
+		bombaTest.explotar(bombaTest)
+		assert.that(game.hasVisual(paredIrrompible))
+	}
+	
+	test "destruccion de paredes rompibles" {
+		game.addVisual(paredRompible)
+		bombaTest.explotar(bombaTest)
+		assert.that(not game.hasVisual(paredRompible))
+	}
+	
+	//test el bomber choca contra paredes y bombas
+	test "bomber choca contra pared rompible" {
+		game.addVisual(paredRompible2)
+		bomberTest.moverA(arriba)
+		assert.that(bomberTest.position() == game.center().left(1))
+	}
+	
+	test "bomber choca contra pared irrompible" {
+		game.addVisual(paredIrrompible2)
+		bomberTest.moverA(abajo)
+		assert.that(bomberTest.position() == game.center().left(1))
+	}
+	
+	test "bomber choca contra una bomba" {
+		game.addVisual(bombaTest)
+		bomberTest.moverA(derecha)
+		assert.that(bomberTest.position() == game.center().left(1))
+	}
+}
 
-	assert.that(true)
+describe "tests de powerUps"{
+    //Bomber
+	const bomberTest = new Bomber(position = game.center().left(1), nroBomber = "1", posScore = 1)
+	
+	//Bomba
+	const bombaTest = new Bomba(position = game.center(), poder = 1)
+	const bombaTest2 = new Bomba(position = game.center(), poder = 2)
+	
+	//Power Ups
+	const escudo        = new Escudo(position = game.origin())
+	const masBomba      = new MasBomba(position = game.origin())
+	const masPoderBomba = new MasPoderBomba(position = game.origin())
+	
+	//Paredes
+	const paredRompible  = new Pared(position = game.center().up(1), destruible = true)
+	const paredRompible2 = new Pared(position = game.center().up(2), destruible = true)
 
+	test "powerup masBombas aumenta la cantidad de bombas" {
+		game.addVisual(masBomba)
+		const estadoInicial = bomberTest.cantidadBombas()
+		bomberTest.obtener(masBomba)
+		assert.that(bomberTest.cantidadBombas() == estadoInicial+1)
+	}
+	
+	test "si alcance el limite de bombas no puedo poner mas" {
+		bomberTest.ponerBomba()
+		bomberTest.moverA(izquierda)
+		bomberTest.ponerBomba()
+		const objetos = game.getObjectsIn(bomberTest.position())
+		assert.notThat(objetos.any({objeto => objeto.image() == "Bomb1.png"}))
+	}
+	
+	test "si no alcance el limite de bombas puedo poner mas" {
+		game.addVisual(masBomba)
+		bomberTest.obtener(masBomba)
+		bomberTest.ponerBomba()
+		bomberTest.moverA(izquierda)
+		bomberTest.ponerBomba()
+		const objetos = game.getObjectsIn(bomberTest.position())
+		assert.that(objetos.any({objeto => objeto.image() == "Bomb1.png"}))
+	}
+	
+	test "powerup masPoderBomba aumenta la potencia de la bomba" {
+		game.addVisual(masPoderBomba)
+		const estadoInicial = bomberTest.poderBomba()
+		bomberTest.obtener(masPoderBomba)
+		assert.that(bomberTest.poderBomba() == estadoInicial+1)
+	}
+	
+	test "bomba con poder = 2 destruye con radio = 2" {
+		game.addVisual(paredRompible)
+		game.addVisual(paredRompible2)
+		bombaTest2.explotar(bombaTest2)
+		assert.notThat(game.hasVisual(paredRompible) and game.hasVisual(paredRompible2))
+	}
+	
+	test "powerup escudo funciona" {
+		game.addVisual(escudo)
+		bomberTest.obtener(escudo)
+		assert.that(bomberTest.tieneEscudo())
+	}
+	
+	test "bomber con escudo lo pierde si la explosion lo daña" {
+		game.addVisual(escudo)
+		game.addVisual(bomberTest)
+		bomberTest.obtener(escudo)
+		bombaTest.explotar(bombaTest)
+		assert.that(!bomberTest.tieneEscudo())
+	}
 }
